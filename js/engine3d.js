@@ -67,13 +67,13 @@
   const TEX = {};
   function buildTextures() {
     TEX.wall = canvasTex(512, 512, (g, w, h) => {
-      g.fillStyle = '#dfe3e8'; g.fillRect(0, 0, w, h);
-      g.fillStyle = '#e9ecf0'; g.fillRect(8, 8, w / 2 - 12, h - 16); g.fillRect(w / 2 + 4, 8, w / 2 - 12, h - 16);
+      g.fillStyle = '#c9ced5'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#d8dce2'; g.fillRect(8, 8, w / 2 - 12, h - 16); g.fillRect(w / 2 + 4, 8, w / 2 - 12, h - 16);
       g.strokeStyle = '#b9c0c9'; g.lineWidth = 3; g.strokeRect(8, 8, w / 2 - 12, h - 16); g.strokeRect(w / 2 + 4, 8, w / 2 - 12, h - 16);
       g.fillStyle = '#2c6fd6'; g.fillRect(0, h * 0.62, w, 10);
       g.fillStyle = '#9aa3ae'; for (let i = 0; i < 10; i++) g.fillRect(40 + i * 8, 60, 4, 50);
       g.fillStyle = '#aab2bc'; [[18, 18], [w / 2 - 14, 18], [18, h - 18], [w / 2 - 14, h - 18], [w / 2 + 14, 18], [w - 18, 18], [w / 2 + 14, h - 18], [w - 18, h - 18]].forEach(([x, y]) => { g.beginPath(); g.arc(x, y, 3.5, 0, 7); g.fill(); });
-      g.fillStyle = '#c3c9d1'; g.fillRect(0, h - 40, w, 40);
+      g.fillStyle = '#5a626e'; g.fillRect(0, h - 40, w, 40); g.fillStyle = '#7b838f'; g.fillRect(0, h - 40, w, 4);
     });
     TEX.wall.wrapS = TEX.wall.wrapT = T.RepeatWrapping;
     TEX.hull = canvasTex(512, 512, (g, w, h) => {
@@ -97,11 +97,14 @@
     });
     TEX.floor.wrapS = TEX.floor.wrapT = T.RepeatWrapping;
     TEX.ceiling = canvasTex(256, 256, (g, w, h) => {
-      g.fillStyle = '#c8cdd4'; g.fillRect(0, 0, w, h);
-      g.strokeStyle = '#a8afb8'; g.lineWidth = 3; g.strokeRect(2, 2, w - 4, h - 4);
-      g.fillStyle = '#f6f7f8'; g.fillRect(70, 30, 116, 196);
+      g.fillStyle = '#aeb5bf'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#bcc3cc'; g.fillRect(6, 6, w - 12, h - 12);
+      g.strokeStyle = '#8a929d'; g.lineWidth = 4; g.strokeRect(2, 2, w - 4, h - 4);
+      g.fillStyle = '#9aa2ad'; for (let x = 24; x < w - 20; x += 12) for (let y = 70; y < h - 70; y += 12) g.fillRect(x, y, 3, 3);
+      g.fillStyle = '#6c737d'; g.fillRect(0, 26, w, 14); g.fillRect(0, h - 40, w, 14);
+      g.fillStyle = '#f4f6f8'; g.fillRect(0, 29, w, 8); g.fillRect(0, h - 37, w, 8);
     });
-    TEX.ceilingE = canvasTex(256, 256, (g, w, h) => { g.fillStyle = '#000'; g.fillRect(0, 0, w, h); g.fillStyle = '#fff6e6'; g.fillRect(74, 34, 108, 188); });
+    TEX.ceilingE = canvasTex(256, 256, (g, w, h) => { g.fillStyle = '#000'; g.fillRect(0, 0, w, h); g.fillStyle = '#fff6ea'; g.fillRect(0, 29, w, 8); g.fillRect(0, h - 37, w, 8); });
     [TEX.ceiling, TEX.ceilingE].forEach((t) => { t.wrapS = t.wrapT = T.RepeatWrapping; });
     TEX.locker = canvasTex(256, 512, (g, w, h) => {
       g.fillStyle = '#d6dbe1'; g.fillRect(0, 0, w, h);
@@ -211,18 +214,19 @@
   /* ---------- materiais compartilhados ---------- */
   const MAT = {};
   function buildMaterials() {
-    MAT.wall = new T.MeshStandardMaterial({ map: TEX.wall, roughness: 0.65, metalness: 0.08 });
+    MAT.wall = new T.MeshStandardMaterial({ map: TEX.wall, roughness: 0.72, metalness: 0.05, envMapIntensity: 0.45 });
     MAT.hull = new T.MeshStandardMaterial({ map: TEX.hull, roughness: 0.55, metalness: 0.15 });
-    MAT.wallOut = new T.MeshStandardMaterial({ color: 0xe7e6e1, roughness: 0.6, metalness: 0.1 });
-    MAT.floor = new T.MeshStandardMaterial({ map: TEX.floor, roughness: 0.55, metalness: 0.6 });
-    MAT.ceiling = new T.MeshStandardMaterial({ map: TEX.ceiling, color: 0xc4ccd8, emissiveMap: TEX.ceilingE, emissive: 0xfff6ea, emissiveIntensity: 1.5, roughness: 0.7 });
+    MAT.wallOut = new T.MeshStandardMaterial({ color: 0xd6d8da, roughness: 0.65, metalness: 0.1, envMapIntensity: 0.5 });
+    MAT.floor = new T.MeshStandardMaterial({ map: TEX.floor, roughness: 0.62, metalness: 0.3, envMapIntensity: 0.18 });
+    MAT.ceiling = new T.MeshStandardMaterial({ map: TEX.ceiling, color: 0xe4ebf4, emissiveMap: TEX.ceilingE, emissive: 0xfff6ea, emissiveIntensity: 1.25, roughness: 0.8, envMapIntensity: 0.25 });
     MAT.metal = new T.MeshStandardMaterial({ color: 0xaab1bb, roughness: 0.3, metalness: 0.85 });
+    MAT.shadowOnly = new T.MeshBasicMaterial({ colorWrite: false, depthWrite: false });
     MAT.chrome = new T.MeshStandardMaterial({ color: 0xdfe4ea, roughness: 0.08, metalness: 1 });
     MAT.dark = new T.MeshStandardMaterial({ color: 0x252b36, roughness: 0.5, metalness: 0.4 });
     MAT.darker = new T.MeshStandardMaterial({ color: 0x14171d, roughness: 0.6, metalness: 0.3 });
     MAT.white = new T.MeshStandardMaterial({ color: 0xf3f3f1, roughness: 0.45, metalness: 0.05 });
     MAT.offwhite = new T.MeshStandardMaterial({ color: 0xdedbd2, roughness: 0.6 });
-    MAT.glass = new T.MeshStandardMaterial({ color: 0xbfe2ff, roughness: 0.02, metalness: 0.2, transparent: true, opacity: 0.18, side: T.DoubleSide, depthWrite: false, envMapIntensity: 2 });
+    MAT.glass = new T.MeshLambertMaterial({ color: 0xbfe2ff, transparent: true, opacity: 0.14, side: T.DoubleSide, depthWrite: false });
     MAT.glassDark = new T.MeshStandardMaterial({ color: 0x0c1a2a, roughness: 0.05, metalness: 0.6, envMapIntensity: 2 });
     MAT.visor = new T.MeshStandardMaterial({ color: 0xd8a640, roughness: 0.05, metalness: 1 });
     MAT.solar = new T.MeshStandardMaterial({ map: TEX.solar, roughness: 0.25, metalness: 0.6 });
@@ -614,6 +618,7 @@
     if (!o.glass) {
       const cg = new T.PlaneGeometry(o.w, o.d); const cuv = cg.attributes.uv; for (let i = 0; i < cuv.count; i++) cuv.setXY(i, cuv.getX(i) * o.w / 2.4, cuv.getY(i) * o.d / 2.4);
       const ce = new T.Mesh(cg, MAT.ceiling); ce.rotation.x = Math.PI / 2; ce.position.set(o.x, h - 0.01, o.z); g.add(ce);
+      const blk = new T.Mesh(new T.BoxGeometry(o.w + 0.4, 0.12, o.d + 0.4), MAT.shadowOnly); blk.position.set(o.x, h + 0.08, o.z); blk.castShadow = true; g.add(blk);
       const alongX = o.w >= o.d;
       [-1, 1].forEach((s) => {
         const pipe = new T.Mesh(new T.CylinderGeometry(0.06, 0.06, (alongX ? o.w : o.d) - 0.4, 8), s > 0 ? MAT.metal : MAT.blue);
@@ -625,7 +630,7 @@
     if (o.roof === 'dome' || o.roof === 'glassdome') {
       const r = Math.min(o.w, o.d) / 2 - 0.1;
       if (o.roof === 'dome') B.box(roof, o.w + 0.2, 0.25, o.d + 0.2, MAT.hull, 0, 0.12, 0);
-      else { const rim = B.box(roof, o.w + 0.2, 0.2, o.d + 0.2, MAT.metal, 0, 0.1, 0); }
+      else { const W = o.w + 0.2, D = o.d + 0.2, bw = 0.35; B.box(roof, W, 0.2, bw, MAT.metal, 0, 0.1, -D / 2 + bw / 2); B.box(roof, W, 0.2, bw, MAT.metal, 0, 0.1, D / 2 - bw / 2); B.box(roof, bw, 0.2, D, MAT.metal, -W / 2 + bw / 2, 0.1, 0); B.box(roof, bw, 0.2, D, MAT.metal, W / 2 - bw / 2, 0.1, 0); }
       const dg = new T.IcosahedronGeometry(r, 2);
       const pos = dg.attributes.position; for (let i = 0; i < pos.count; i++) if (pos.getY(i) < 0) pos.setY(i, 0);
       dg.computeVertexNormals();
@@ -650,7 +655,7 @@
       roof.add(band);
     }
     let light = null;
-    if (!o.noLight) { light = new T.PointLight(o.lightColor || 0xfff1e0, o.lightI || 1.2, Math.max(o.w, o.d) * 1.5 + 2, 1.5); light.position.set(o.x, h - 0.5, o.z); g.add(light); }
+    if (!o.noLight) { light = new T.PointLight(o.lightColor || 0xfff1e0, (o.lightI || 1.2) * 0.85, Math.max(o.w, o.d) * 1.5 + 2, 1.6); light.position.set(o.x, h - 0.5, o.z); g.add(light); }
     if (o.name && o.signs) o.signs.forEach(([sx, sz, ry]) => B.label(g, o.name, o.sub, sx, doorH + 0.3, sz, ry, o.color, 1.6));
     return { group: g, inner: { minX: x0 + t / 2, maxX: x1 - t / 2, minZ: z0 + t / 2, maxZ: z1 - t / 2, name: o.name, id: o.id }, light };
   };
@@ -846,18 +851,23 @@
     B.box(g, 0.08, 0.05, 0.02, MAT.orange, -0.18, 1.62, 0.17, { cast: false });
     return g;
   };
+  // folha curva compartilhada (roseta) para estufas e racks
+  let _leafG = null;
+  B.leafGeo = () => { if (_leafG) return _leafG; const lg = new T.SphereGeometry(0.1, 10, 6, -Math.PI * 0.45, Math.PI * 0.9, 0, Math.PI * 0.6); lg.translate(0, -0.1, 0); lg.rotateX(Math.PI); lg.scale(1.25, 1.45, 0.8); _leafG = lg; return lg; };
+  // InstancedMesh de rosetas: pts = [[x,y,z,escala], ...]
+  B.rosettes = (g, pts, mat, leaves = 6) => {
+    const inst = new T.InstancedMesh(B.leafGeo(), mat, pts.length * leaves), m4 = new T.Matrix4(), q = new T.Quaternion(), e = new T.Euler(0, 0, 0, 'YXZ'); let k = 0;
+    pts.forEach(([x, y, z, sc = 1], j) => { for (let i = 0; i < leaves; i++) { e.set(0.7 + (i % 2) * 0.45, i / leaves * Math.PI * 2 + j * 0.9, 0); q.setFromEuler(e); m4.compose(new T.Vector3(x, y, z), q, new T.Vector3(sc, sc * (0.85 + (i % 3) * 0.12), sc)); inst.setMatrixAt(k++, m4); } });
+    inst.castShadow = true; g.add(inst); return inst;
+  };
   B.plantRack = (p, x, z, rotY, len = 3) => {
     const g = B.grp(p, x, z, rotY);
-    const leafG = new T.IcosahedronGeometry(0.13, 0);
     for (let lvl = 0; lvl < 3; lvl++) {
       const y = 0.45 + lvl * 0.7;
       B.box(g, len, 0.05, 0.7, MAT.metal, 0, y, 0);
       B.box(g, len - 0.1, 0.12, 0.6, MAT.white, 0, y + 0.09, 0);
       const n = Math.round(len * 3);
-      const inst = new T.InstancedMesh(leafG, lvl === 1 ? MAT.redLeaf : MAT.plant, n);
-      const m4 = new T.Matrix4();
-      for (let i = 0; i < n; i++) { const s = 0.9 + ((i * 7 + lvl) % 4) * 0.15; m4.compose(new T.Vector3(-len / 2 + 0.2 + i * (len - 0.4) / (n - 1), y + 0.25, ((i + lvl) % 2 ? 0.13 : -0.13)), new T.Quaternion().setFromEuler(new T.Euler(i, i * 2, 0)), new T.Vector3(s, s * 1.2, s)); inst.setMatrixAt(i, m4); }
-      inst.castShadow = true; g.add(inst);
+      B.rosettes(g, Array.from({ length: n }, (_, i) => [-len / 2 + 0.2 + i * (len - 0.4) / (n - 1), y + 0.15, ((i + lvl) % 2 ? 0.13 : -0.13), 1.05 + ((i * 7 + lvl) % 4) * 0.1]), lvl === 1 ? MAT.redLeaf : MAT.plant, 6);
       if (lvl === 0) for (let i = 0; i < 4; i++) B.sph(g, 0.05, MAT.tomato, -len / 2 + 0.5 + i * len / 4, y + 0.32, 0.18, 8);
       const led = new T.Mesh(new T.BoxGeometry(len - 0.2, 0.03, 0.1), MAT.ledPink); led.position.set(0, y + 0.62, 0); g.add(led);
     }
@@ -867,9 +877,7 @@
   B.plantTower = (p, x, z) => {
     const g = B.grp(p, x, z, 0);
     B.cyl(g, 0.12, 0.12, 2.2, MAT.white, 0, 1.1, 0, 12);
-    const inst = new T.InstancedMesh(new T.IcosahedronGeometry(0.12, 0), MAT.plant, 24); const m4 = new T.Matrix4();
-    for (let i = 0; i < 24; i++) { const a = i * 2.4, y = 0.4 + (i % 8) * 0.24; m4.compose(new T.Vector3(Math.cos(a) * 0.2, y, Math.sin(a) * 0.2), new T.Quaternion(), new T.Vector3(1, 1.1, 1)); inst.setMatrixAt(i, m4); }
-    inst.castShadow = true; g.add(inst);
+    B.rosettes(g, Array.from({ length: 16 }, (_, i) => { const a = i * 2.4; return [Math.cos(a) * 0.17, 0.35 + (i % 8) * 0.24, Math.sin(a) * 0.17, 0.9]; }), MAT.plant, 5);
     B.cyl(g, 0.3, 0.3, 0.15, MAT.white, 0, 0.08, 0, 16);
     return g;
   };
@@ -877,8 +885,14 @@
     const g = B.grp(p, x, z, 0);
     B.cyl(g, 1.2, 1.3, 0.9, MAT.dark, 0, 0.45, 0, 32); B.cyl(g, 1.25, 1.25, 0.05, MAT.glassDark, 0, 0.92, 0, 32);
     const ring = new T.Mesh(new T.TorusGeometry(1.15, 0.03, 8, 48), MAT.ledBlue); ring.rotation.x = Math.PI / 2; ring.position.y = 0.95; g.add(ring);
-    const holo = new T.Mesh(new T.IcosahedronGeometry(0.45, 2), new T.MeshBasicMaterial({ color: kind === 'moon' ? 0xbfd8ff : 0xff9a5a, wireframe: true, transparent: true, opacity: 0.55 }));
-    holo.position.y = 1.65; g.add(holo);
+    const hc = kind === 'moon' ? 0xbfd8ff : 0xff9a5a;
+    const holo = new T.Group(); holo.position.y = 1.45; g.add(holo);
+    holo.add(new T.Mesh(new T.SphereGeometry(0.42, 32, 20), new T.MeshBasicMaterial({ color: hc, transparent: true, opacity: 0.22, blending: T.AdditiveBlending, depthWrite: false, toneMapped: false })));
+    holo.add(new T.Mesh(new T.IcosahedronGeometry(0.44, 3), new T.MeshBasicMaterial({ color: hc, wireframe: true, transparent: true, opacity: 0.7, toneMapped: false })));
+    const orbitR = new T.Mesh(new T.TorusGeometry(0.62, 0.008, 6, 64), new T.MeshBasicMaterial({ color: 0x4cc3ff, toneMapped: false })); orbitR.rotation.x = 1.2; holo.add(orbitR);
+    const moonlet = new T.Mesh(new T.SphereGeometry(0.05, 12, 8), new T.MeshBasicMaterial({ color: 0xffffff, toneMapped: false })); moonlet.position.set(0.62, 0, 0); orbitR.add(moonlet);
+    const gridTop = new T.Mesh(new T.CircleGeometry(1.15, 48), new T.MeshBasicMaterial({ map: TEX.holoGrid || (TEX.holoGrid = canvasTex(256, 256, (c, w, h) => { c.fillStyle = '#04121c'; c.fillRect(0, 0, w, h); c.strokeStyle = 'rgba(76,195,255,.55)'; c.lineWidth = 1; for (let i = 0; i <= w; i += 16) { c.beginPath(); c.moveTo(i, 0); c.lineTo(i, h); c.stroke(); c.beginPath(); c.moveTo(0, i); c.lineTo(w, i); c.stroke(); } c.strokeStyle = 'rgba(255,154,90,.8)'; c.lineWidth = 2; c.beginPath(); c.arc(128, 128, 60, 0, 7); c.stroke(); c.beginPath(); c.arc(128, 128, 100, 0, 7); c.stroke(); })), toneMapped: false }));
+    gridTop.rotation.x = -Math.PI / 2; gridTop.position.y = 0.955; g.add(gridTop);
     const cone = new T.Mesh(new T.ConeGeometry(0.6, 0.6, 24, 1, true), new T.MeshBasicMaterial({ color: 0x4cc3ff, transparent: true, opacity: 0.08, side: T.DoubleSide, depthWrite: false })); cone.position.y = 1.25; cone.rotation.x = Math.PI; g.add(cone);
     g.userData.holo = holo;
     return g;
@@ -983,7 +997,13 @@
 
   B.terrain = (p, opt) => {
     const size = opt.size || 600, seg = opt.seg || 200, seed = opt.seed || 3, craters = opt.craters || [];
+    const flats = (opt.flats || []).map((f) => Object.assign({}, f));
     const height = (x, z) => {
+      let h0 = baseH(x, z);
+      for (const f of flats) { if (f.h === undefined) f.h = baseH(f.x, f.z); const k = smooth(f.r, f.r + 9, Math.hypot(x - f.x, z - f.z)); h0 = f.h + (h0 - f.h) * k; }
+      return h0;
+    };
+    const baseH = (x, z) => {
       const r = Math.hypot(x, z);
       const flat = smooth(opt.flatR || 34, (opt.flatR || 34) + 26, r);
       let h = (fbm(x * 0.012, z * 0.012, seed) - 0.5) * (opt.amp || 9) + (fbm(x * 0.05, z * 0.05, seed + 3, 3) - 0.5) * 1.4 + (fbm(x * 0.3, z * 0.3, seed + 7, 2) - 0.5) * 0.18;

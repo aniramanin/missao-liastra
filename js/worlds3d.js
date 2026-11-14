@@ -25,14 +25,14 @@
     const mars = site.id === 'mars';
     const scene = eng.newScene();
     eng.mode = 'walk'; eng.gravity = mars ? 3.71 : 1.62; eng.jumpV = 3.0; eng.speedMul = mars ? 1 : 0.9; eng.bounds = 190;
-    eng.setExposure(mars ? 1.0 : 1.05);
+    eng.setExposure(mars ? 0.92 : 0.98);
 
     let sky = null;
     if (mars) { sky = B.skyDome(scene, { top: 0x8a5a3a, horizon: 0xd9a36e, bottom: 0x7a4a2c, sun: 0xfff0d8, glow: 0x7fa6ff }); scene.fog = new T.FogExp2(0xc99466, 0.0055); }
     else scene.fog = new T.FogExp2(0x000000, 0.0004);
     scene.background = new T.Color(0x000000);
     eng.setEnvironment(mars ? 0x3a271b : 0x05070c, mars ? 0x5a3c2a : 0x1a1b20, mars ? 0x22120a : 0x3a3a40, [[30, 20, 10, 12, 12, mars ? 0xfff0d8 : 0xffffff, 1.5]]);
-    const hemi = new T.HemisphereLight(mars ? 0xffd9b0 : 0xbfc8d8, mars ? 0x6b3018 : 0x202024, mars ? 0.45 : 0.1); scene.add(hemi);
+    const hemi = new T.HemisphereLight(mars ? 0xffd9b0 : 0xbfc8d8, mars ? 0x4a3328 : 0x202024, mars ? 0.32 : 0.1); scene.add(hemi);
     scene.add(new T.AmbientLight(0xffffff, mars ? 0.06 : 0.04));
     const sun = new T.DirectionalLight(mars ? 0xfff0dc : 0xffffff, mars ? 1.4 : 2.8);
     sun.castShadow = true; sun.shadow.mapSize.set(eng.lowPower ? 1024 : 2048, eng.lowPower ? 1024 : 2048);
@@ -48,7 +48,7 @@
       ? [{ x: 70, z: 60, r: 26, depth: 5, rim: 2.2 }, { x: -95, z: 40, r: 18, depth: 3, rim: 1.5 }, { x: 40, z: -110, r: 32, depth: 6, rim: 3 }]
       : [{ x: -78, z: -64, r: 30, depth: 9, rim: 3 }, { x: 80, z: 50, r: 22, depth: 5, rim: 2 }, { x: 30, z: 110, r: 14, depth: 3, rim: 1.2 }, { x: -120, z: 70, r: 26, depth: 6, rim: 2.4 }];
     const ter = B.terrain(scene, {
-      seed: mars ? 5 : 17, amp: mars ? 10 : 7, flatR: 38, craters,
+      seed: mars ? 5 : 17, amp: mars ? 10 : 7, flatR: 38, craters, flats: [{ x: 46, z: -34, r: 14 }, { x: -26, z: -14, r: 6 }],
       c1: mars ? 0x8f3517 : 0x7c7d82, c2: mars ? 0xb4562a : 0x5d5e63, c3: mars ? 0x55200e : 0x46474c,
       rock: mars ? 0x6d3219 : 0x6a6b70, rocks: eng.lowPower ? 350 : 650,
       avoid: (x, z) => Math.hypot(x, z) < 32
@@ -271,7 +271,7 @@
     const trackMat = new T.MeshBasicMaterial({ color: mars ? 0x6a2c12 : 0x45464b, transparent: true, opacity: 0.35, depthWrite: false });
     [[-22, 4, 66, 56], [-22, 4, -60, -48], [-22, 4, -34, -32], [-22, 4, 46, -24]].forEach(([x0, z0, x1, z1]) => {
       const len = Math.hypot(x1 - x0, z1 - z0), a = Math.atan2(x1 - x0, z1 - z0);
-      for (let s = 6; s < len; s += 4) { const t = s / len, x = x0 + (x1 - x0) * t, z = z0 + (z1 - z0) * t; const m = new T.Mesh(new T.PlaneGeometry(2.4, 4.1), trackMat); m.rotation.set(-Math.PI / 2, 0, a); m.position.set(x, eng.groundAt(x, z) + 0.05, z); G.add(m); }
+      for (let s = 6; s < len; s += 4) { const t = s / len, x = x0 + (x1 - x0) * t, z = z0 + (z1 - z0) * t; if (x > -17 && x < 24 && z > -29 && z < 25) continue; const m = new T.Mesh(new T.PlaneGeometry(2.4, 4.1), trackMat); m.rotation.set(-Math.PI / 2, 0, a); m.position.set(x, eng.groundAt(x, z) + 0.05, z); G.add(m); }
     });
     const devils = [];
     if (mars) for (let i = 0; i < 2; i++) { const d = new T.Mesh(new T.CylinderGeometry(6, 1.2, 50, 16, 1, true), new T.MeshBasicMaterial({ color: 0xc08050, transparent: true, opacity: 0.12, depthWrite: false, side: T.DoubleSide })); d.position.set(i ? 120 : -130, 25, i ? -90 : 80); scene.add(d); devils.push(d); }
@@ -363,7 +363,7 @@
   function buildOrbit(eng, mission) {
     const scene = eng.newScene();
     eng.mode = 'float'; eng.bounds = null;
-    eng.setExposure(1.05);
+    eng.setExposure(0.9);
     scene.background = new T.Color(0x000000); scene.fog = null;
     eng.setEnvironment(0x02040a, 0x08142a, 0x1e3a6a, [[0, 40, 30, 20, 20, 0xffffff, 1.5]]);
     scene.add(new T.AmbientLight(0xffffff, 0.08));
@@ -448,7 +448,7 @@
         rail.position.set((b[0] + b[1]) / 2 + (alongX ? 0 : s * ((b[1] - b[0]) / 2 - 0.1)), b[2] + 0.35, (b[4] + b[5]) / 2 + (alongX ? s * ((b[5] - b[4]) / 2 - 0.1) : 0)); mg.add(rail);
       });
       if (!['cupola', 'dragon', 'cargo'].includes(md.id)) {
-        const light = new T.PointLight(0xf4f7ff, 0.95, Math.max(lx, lz) * 1.2 + 4, 1.8);
+        const light = new T.PointLight(0xf4f7ff, 0.72, Math.max(lx, lz) * 1.2 + 4, 1.8);
         light.position.set((b[0] + b[1]) / 2, (b[2] + b[3]) / 2 + 0.3, (b[4] + b[5]) / 2); mg.add(light); md.light = light;
         const lab = new T.Mesh(new T.PlaneGeometry(1.4, 0.35), new T.MeshBasicMaterial({ map: Engine3D.labelTex(md.name, null, '#ff6b35'), toneMapped: false }));
         lab.rotation.x = Math.PI / 2; lab.scale.x = -1;

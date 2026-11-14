@@ -27,34 +27,50 @@
     'survival-moon': () => planet(200, 205, 100, '#e8e8ea', '#5c5d63', true, 'sl'),
     'survival-orbit': () => planet(200, 400, 210, '#4f8fe6', '#0a2a66', false, 'so') + '<circle cx="200" cy="170" r="10" fill="#fff"/>'
   };
+  /* Geometria de cada formato:
+     band = linha central da faixa entre a borda externa e a interna (onde vão os textos)
+     ban  = centro da faixa da frase (sempre DENTRO da arte, para não cobrir os textos da borda) */
   const SHAPES = {
-    circle: { outer: '<circle cx="200" cy="200" r="194"/>', inner: '<circle cx="200" cy="200" r="150"/>', ringR: 170 },
-    shield: { outer: '<path d="M200 8 L376 60 C376 240 300 340 200 394 C100 340 24 240 24 60 Z"/>', inner: '<path d="M200 46 L340 88 C338 238 276 318 200 358 C124 318 62 238 60 88 Z"/>', ringR: 0 },
-    oval: { outer: '<ellipse cx="200" cy="200" rx="194" ry="170"/>', inner: '<ellipse cx="200" cy="200" rx="150" ry="128"/>', ringR: 160 },
-    hex: { outer: '<polygon points="200,6 368,103 368,297 200,394 32,297 32,103"/>', inner: '<polygon points="200,46 333,123 333,277 200,354 67,277 67,123"/>', ringR: 0 }
+    circle: { outer: '<circle cx="200" cy="200" r="194"/>', inner: '<circle cx="200" cy="200" r="148"/>', band: { rx: 171, ry: 171 }, ban: 262, banMax: 196 },
+    oval: { outer: '<ellipse cx="200" cy="200" rx="194" ry="172"/>', inner: '<ellipse cx="200" cy="200" rx="148" ry="126"/>', band: { rx: 171, ry: 149 }, ban: 252, banMax: 196 },
+    shield: { outer: '<path d="M200 8 L376 60 C376 240 300 340 200 394 C100 340 24 240 24 60 Z"/>', inner: '<path d="M200 46 L340 88 C338 238 276 318 200 358 C124 318 62 238 60 88 Z"/>', top: 78, ban: 270, banMax: 200, foot: 316 },
+    hex: { outer: '<polygon points="200,6 368,103 368,297 200,394 32,297 32,103"/>', inner: '<polygon points="200,46 333,123 333,277 200,354 67,277 67,123"/>', top: 80, ban: 266, banMax: 200, foot: 306 }
   };
-  const fitFs = (text, maxW, maxFs, ls = 0.12) => Math.max(8, Math.min(maxFs, maxW / (Array.from(text).length * (0.64 + ls))));
+  const FONT = 'Inter, Arial, sans-serif';
+  // largura aproximada de texto em maiúsculas (Inter 700–800): ~0,72 em por letra + espaçamento
+  const textW = (text, fs, ls) => Array.from(text).length * fs * (0.72 + ls);
+  const fitFs = (text, maxW, maxFs, ls = 0.12) => Math.max(7, Math.min(maxFs, maxW / (Array.from(text).length * (0.72 + ls))));
+  const pill = (text, cy, maxW, maxFs, P, h) => {
+    const fs = fitFs(text, maxW - 30, maxFs, 0.1), w = Math.min(maxW, Math.max(110, textW(text, fs, 0.1) + 30));
+    return `<g transform="translate(200 ${cy})"><rect x="${(-w / 2).toFixed(1)}" y="${-h / 2}" width="${w.toFixed(1)}" height="${h}" rx="${h / 4}" fill="${P.border}" stroke="${P.edge || '#ffc94d'}" stroke-width="3"/><text y="1" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-weight="800" font-size="${fs.toFixed(1)}" letter-spacing="${(fs * 0.1).toFixed(2)}" fill="${P.text || '#fff'}">${esc(text)}</text></g>`;
+  };
   window.patchSVG = function (m) {
     const P = m.patch, S = SHAPES[P.shape] || SHAPES.circle, id = 'pt' + m.id.replace(/[^a-z0-9]/gi, '');
-    const code = m.code, bottom = 'LIASTRA · AEROSPACE INNOVATION CENTER';
-    const ry = S.ringR * (P.shape === 'oval' ? 0.87 : 1);
-    const fsTop = fitFs(code, P.shape === 'oval' ? 300 : 330, 26), fsBot = fitFs(bottom, P.shape === 'oval' ? 300 : 345, 14.5);
-    const ringText = S.ringR ? `
-      <path id="${id}t" d="M ${200 - S.ringR} 200 A ${S.ringR} ${ry} 0 0 1 ${200 + S.ringR} 200" fill="none"/>
-      <path id="${id}b" d="M ${200 - S.ringR + 4} 200 A ${S.ringR - 4} ${ry - 4} 0 0 0 ${200 + S.ringR - 4} 200" fill="none"/>
-      <text font-family="Inter, Arial, sans-serif" font-weight="800" font-size="${fsTop.toFixed(1)}" letter-spacing="${(fsTop * 0.12).toFixed(1)}" fill="${P.text || '#fff'}" dominant-baseline="middle"><textPath href="#${id}t" startOffset="50%" text-anchor="middle">${esc(code)}</textPath></text>
-      <text font-family="Inter, Arial, sans-serif" font-weight="700" font-size="${fsBot.toFixed(1)}" letter-spacing="${(fsBot * 0.12).toFixed(1)}" fill="${P.text || '#fff'}" opacity=".9" dominant-baseline="middle"><textPath href="#${id}b" startOffset="50%" text-anchor="middle">${esc(bottom)}</textPath></text>` : `
-      ${(() => { const fs = fitFs(code, 190, 22, 0.1), w = Math.max(120, Math.min(236, Array.from(code).length * fs * 0.76 + 34)); return `<g transform="translate(200 ${P.shape === 'shield' ? 74 : 78})"><rect x="${-w / 2}" y="-18" width="${w}" height="36" rx="9" fill="${P.border}" stroke="${P.edge || '#ffc94d'}" stroke-width="3"/><text y="1.5" text-anchor="middle" dominant-baseline="middle" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="${fs.toFixed(1)}" letter-spacing="${(fs * 0.1).toFixed(1)}" fill="${P.text || '#fff'}">${esc(code)}</text></g>`; })()}`;
-    const banner = (m.patch.banner || m.world.toUpperCase());
-    const fsBan = fitFs(banner, 186, 16, 0.1), banW = Math.max(150, Math.min(214, Array.from(banner).length * fsBan * 0.74 + 30));
+    const code = m.code, bottom = 'LIASTRA · AEROSPACE INNOVATION CENTER', col = P.text || '#fff';
+    let rim = '';
+    if (S.band) {
+      const { rx, ry } = S.band;
+      // arco superior (esquerda → direita por cima) e inferior (esquerda → direita por baixo): textos sempre de pé
+      const arcTop = `M ${200 - rx} 200 A ${rx} ${ry} 0 0 1 ${200 + rx} 200`;
+      const arcBot = `M ${200 - rx} 200 A ${rx} ${ry} 0 0 0 ${200 + rx} 200`;
+      const lenTop = Math.PI * (rx + ry) / 2 * 0.62, lenBot = Math.PI * (rx + ry) / 2 * 0.7;
+      const fsTop = fitFs(code, lenTop, 27, 0.14), fsBot = fitFs(bottom, lenBot, 14, 0.14);
+      rim = `<path id="${id}t" d="${arcTop}" fill="none"/><path id="${id}b" d="${arcBot}" fill="none"/>
+      <text font-family="${FONT}" font-weight="800" font-size="${fsTop.toFixed(1)}" letter-spacing="${(fsTop * 0.14).toFixed(2)}" fill="${col}" dominant-baseline="central"><textPath href="#${id}t" startOffset="50%" text-anchor="middle">${esc(code)}</textPath></text>
+      <text font-family="${FONT}" font-weight="700" font-size="${fsBot.toFixed(1)}" letter-spacing="${(fsBot * 0.14).toFixed(2)}" fill="${col}" opacity=".92" dominant-baseline="central"><textPath href="#${id}b" startOffset="50%" text-anchor="middle">${esc(bottom)}</textPath></text>
+      ${[-1, 1].map((sx) => `<circle cx="${200 + sx * rx}" cy="200" r="3.2" fill="${P.edge || '#ffc94d'}"/>`).join('')}`;
+    } else {
+      rim = pill(code, S.top, 210, 22, P, 36)
+        + `<text x="200" y="${S.foot}" text-anchor="middle" dominant-baseline="central" font-family="${FONT}" font-weight="700" font-size="8.5" letter-spacing="1.2" fill="${col}" opacity=".85">LIASTRA · AIC</text>`;
+    }
+    const banner = (P.banner || m.world.toUpperCase());
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
       <defs><clipPath id="${id}c">${S.inner}</clipPath><linearGradient id="${id}g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P.sky1}"/><stop offset="1" stop-color="${P.sky2}"/></linearGradient></defs>
       <g fill="${P.border}" stroke="${P.edge || '#ffc94d'}" stroke-width="8">${S.outer}</g>
       <g fill="url(#${id}g)" stroke="${P.edge || '#ffc94d'}" stroke-width="4">${S.inner}</g>
       <g clip-path="url(#${id}c)">${stars(26, m.id.length * 97 + 13)}${ART[P.art]()}</g>
-      ${ringText}
-      <g transform="translate(200 ${P.shape === 'shield' ? 306 : 296})"><rect x="${-banW / 2}" y="-16" width="${banW}" height="32" rx="7" fill="${P.border}" stroke="${P.edge || '#ffc94d'}" stroke-width="3"/><text y="1" text-anchor="middle" dominant-baseline="middle" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="${fsBan.toFixed(1)}" letter-spacing="${(fsBan * 0.1).toFixed(1)}" fill="${P.text || '#fff'}">${esc(banner)}</text></g>
-      ${!S.ringR ? `<text x="200" y="${P.shape === 'shield' ? 346 : 344}" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-weight="700" font-size="11" letter-spacing="2" fill="${P.text || '#fff'}" opacity=".85">LIASTRA · AIC</text>` : ''}
+      ${pill(banner, S.ban, S.banMax, 16, P, 30)}
+      ${rim}
     </svg>`;
   };
   window.patchURI = (m) => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(patchSVG(m));
