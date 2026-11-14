@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mission Liastra</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="A 3D simulator for kids ages 7 to 12: live real missions on Mars, the Moon and a copy of the Space Station, with real NASA data.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="css/styles.css?v=20">
+<link rel="alternate" hreflang="pt-BR" href="index.html">
+</head>
+<body>
+
+<nav class="nav" aria-label="Main">
+  <div class="nav-in">
+    <a class="brand" href="#topo"><img class="brand-logo" src="assets/liastra-shield.png" alt="">Mission Liastra</a>
+    <div class="nav-links">
+      <a href="#como-funciona">How it works</a>
+      <a href="#lua-marte">Three worlds</a>
+      <a href="#missoes">Missions</a>
+      <a href="#dados">NASA data</a>
+      <a href="#educadores">Educators</a>
+    </div>
+    <a class="nav-lang" href="index.html" hreflang="pt-BR" lang="pt-BR">PT</a>
+    <button class="nav-cta" data-play>Play</button>
+  </div>
+</nav>
+
+<main id="topo">
+
+  <!-- HERO -->
+  <section class="hero band-dark">
+    <div class="wrap hero-in">
+      <p class="kicker">NASA Space Apps Challenge 2026 · Junior Astronaut Mission Trainer</p>
+      <h1 class="display">Live a mission<br><span class="grad">beyond Earth.</span></h1>
+      <p class="hero-sub">A 3D simulator for kids ages 7 to 12. Wake up at a base on Mars, walk on the Moon, float through a copy of the Space Station and complete real missions, each with its own patch. All with NASA data.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-blue" data-play>Play now</button>
+        <a class="link-more" href="#como-funciona">See how it works</a>
+      </div>
+      <p class="hero-small">Free, in the browser, no sign-up. Keyboard and mouse on a computer, touch on a phone.</p>
+    </div>
+    <div class="hero-planet" aria-hidden="true">
+      <canvas id="planet" width="640" height="640"></canvas>
+    </div>
+    <div class="wrap">
+      <dl class="hero-stats">
+        <div><dt>Radiation on the surface of Mars</dt><dd><span class="mono">0.67</span> mSv per sol</dd></div>
+        <div><dt>Radiation on the surface of the Moon</dt><dd><span class="mono">1.37</span> mSv per day</dd></div>
+        <div><dt>A message from Mars to Earth today</dt><dd><span class="mono" data-light-min>—</span> minutes</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- TRADE-OFF -->
+  <section class="band-light statement">
+    <div class="wrap narrow center">
+      <h2 class="headline">No choice is free.</h2>
+      <p class="body-lg">Turning on the radiation shield takes power from the greenhouse. Fetching ice drains the battery. Asking Earth for help costs time. That is how NASA mission planners think every day, and that is how the game works.</p>
+    </div>
+    <div class="wrap">
+      <div class="tradeoff" id="tradeoff">
+        <div class="to-head">
+          <p class="to-k">Try it</p>
+          <p class="to-q">A solar storm is on its way. You have <b>6 energy cells</b> to split.</p>
+        </div>
+        <div class="to-slider">
+          <label for="to-range"><span>Greenhouse</span><span>Water shield</span></label>
+          <input id="to-range" type="range" min="0" max="6" step="1" value="2" aria-describedby="to-out">
+          <div class="to-cells" aria-hidden="true"></div>
+        </div>
+        <div class="to-out" id="to-out" aria-live="polite">
+          <div class="to-res"><span class="to-n" data-to="food">—</span><span class="to-l">food tomorrow</span></div>
+          <div class="to-res"><span class="to-n" data-to="dose">—</span><span class="to-l">crew radiation</span></div>
+          <p class="to-say" data-to="say"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENTO -->
+  <section class="band-light bento-sec" aria-labelledby="bento-h">
+    <div class="wrap">
+      <h2 class="headline-sm" id="bento-h">Three things to keep alive.<br><span class="muted">And a real Sun to face.</span></h2>
+      <div class="bento">
+        <article class="tile t-energy">
+          <p class="t-k">Energy</p>
+          <h3>Every sol starts with energy cells.</h3>
+          <p>The Sun fills the panels. You decide where each cell goes. Whatever is left goes to the battery, which has a limit.</p>
+          <div class="cell-row" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </article>
+        <article class="tile t-air">
+          <p class="t-k">Air and water</p>
+          <h3>Every breath is manufactured.</h3>
+          <p>With 3 cells, life support stays stable. Fewer than that, and the air runs out.</p>
+        </article>
+        <article class="tile t-food">
+          <p class="t-k">Space farming</p>
+          <h3>Plant, light, wait, harvest.</h3>
+          <p>Six real crops already tested in space: lettuce, radish, tomato, chile pepper, potato and wheat. Harvest at the right time, and the plants give back oxygen too.</p>
+        </article>
+        <article class="tile t-rad">
+          <p class="t-k">Radiation</p>
+          <h3>The game’s storms follow the real Sun.</h3>
+          <p>Each mission sol matches a real day recorded by DONKI, NASA’s space weather database. If the real Sun launched a fast ejection that day, your base is in danger.</p>
+        </article>
+        <article class="tile t-delay">
+          <p class="t-k">Communication delay</p>
+          <p class="t-big"><span class="mono" data-light-min>—</span><small>min</small></p>
+          <p>That is how long a message takes today to get from Mars to Earth. From the Moon, just 1.3 seconds. During an air leak, every minute of waiting costs oxygen.</p>
+        </article>
+        <article class="tile t-cards">
+          <p class="t-k">Real science</p>
+          <h3>Dozens of real facts.</h3>
+          <p>Every task ends with a real fact and its source: the MOXIE that made oxygen on Mars, the rover that stopped in a dust storm, the plants grown in Apollo soil.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section class="band-white how" id="como-funciona" aria-labelledby="how-h">
+    <div class="wrap">
+      <p class="eyebrow-c">How it works</p>
+      <h2 class="headline" id="how-h">Do everything an astronaut does.</h2>
+      <ol class="steps">
+        <li class="step">
+          <span class="step-n">1</span>
+          <h3>The real routine</h3>
+          <p>Sleep in your bunk, shower, prepare food, train on the treadmill, run the oxygen generator, grow crops, analyze samples in the lab and suit up for a walk outside.</p>
+          <div class="mini mini-fc"><span>Solar energy</span><b>9 cells</b><span>Space weather</span><b class="warn">Active</b></div>
+        </li>
+        <li class="step">
+          <span class="step-n">2</span>
+          <h3>Split the energy</h3>
+          <p>At the energy console, life support, greenhouse, water shield and science compete for the same cells. Air, food and battery change in real time.</p>
+          <div class="mini mini-plan"><span style="--w:60%;--c:#4cc3ff">Life support</span><span style="--w:40%;--c:#5bd48a">Greenhouse</span><span style="--w:20%;--c:#ffc94d">Shield</span><span style="--w:40%;--c:#b392ff">Science</span></div>
+        </li>
+        <li class="step">
+          <span class="step-n">3</span>
+          <h3>Missions with a checklist</h3>
+          <p>Every mission has a call, a briefing and a checklist. A marker and a minimap show where to go. At the end, you earn the mission patch.</p>
+          <div class="mini mini-ev"><b>Air leak!</b><span class="c-d">−4 air</span><span class="c-w">38 min wait</span></div>
+        </li>
+        <li class="step">
+          <span class="step-n">4</span>
+          <h3>Discover the science</h3>
+          <p>Tasks end with a real fact and its source, so you can check it. At the end, a report shows what the mission taught.</p>
+          <div class="mini mini-fact"><b>Real science</b><span>In 2018, a dust storm covered all of Mars…</span></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- LUA x MARTE -->
+  <section class="band-light compare-sec" id="lua-marte" aria-labelledby="cmp-h">
+    <div class="wrap">
+      <h2 class="headline" id="cmp-h">Three worlds to train in.</h2>
+      <p class="body-lg center narrow">Three places, three ways to survive. The numbers below are the ones the game uses.</p>
+      <div class="compare">
+        <div class="cmp-col">
+          <canvas class="mini-planet" data-planet="moon" width="240" height="240" aria-hidden="true"></canvas>
+          <h3>Moon</h3>
+          <p class="cmp-place">South Pole · Shackleton Crater</p>
+          <button class="btn btn-blue btn-sm" data-play="moon">Play on the Moon</button>
+          <dl>
+            <div><dt>One daylight cycle</dt><dd>29.5 Earth days</dd></div>
+            <div><dt>Gravity</dt><dd>17% of Earth’s</dd></div>
+            <div><dt>Temperature</dt><dd>−170 °C to +120 °C</dd></div>
+            <div><dt>Radiation per day</dt><dd>1.37 mSv</dd></div>
+            <div><dt>Delay to Earth</dt><dd>1.3 seconds</dd></div>
+            <div><dt>Special challenge</dt><dd>Multi-day shadows and micrometeorites</dd></div>
+          </dl>
+        </div>
+        <div class="cmp-col">
+          <canvas class="mini-planet" data-planet="mars" width="240" height="240" aria-hidden="true"></canvas>
+          <h3>Mars</h3>
+          <p class="cmp-place">Jezero Crater</p>
+          <button class="btn btn-blue btn-sm" data-play="mars">Play on Mars</button>
+          <dl>
+            <div><dt>One sol</dt><dd>24 h 39 min</dd></div>
+            <div><dt>Gravity</dt><dd>38% of Earth’s</dd></div>
+            <div><dt>Temperature</dt><dd>−60 °C on average</dd></div>
+            <div><dt>Radiation per day</dt><dd>0.67 mSv</dd></div>
+            <div><dt>Delay to Earth</dt><dd><span data-light-min>—</span> minutes today</dd></div>
+            <div><dt>Special challenge</dt><dd>Dust storms and −90 °C nights</dd></div>
+          </dl>
+        </div>
+        <div class="cmp-col">
+          <div class="mini-planet orbit-icon" aria-hidden="true"></div>
+          <h3>Orbit</h3>
+          <p class="cmp-place">A station 420 km up, modeled on the ISS</p>
+          <button class="btn btn-blue btn-sm" data-play="orbit">Play in Orbit</button>
+          <dl>
+            <div><dt>One orbit of Earth</dt><dd>92 minutes (16 sunrises a day)</dd></div>
+            <div><dt>Gravity</dt><dd>Microgravity: you float</dd></div>
+            <div><dt>Temperature</dt><dd>−150 °C to +120 °C outside</dd></div>
+            <div><dt>Radiation per day</dt><dd>about 0.6 mSv</dd></div>
+            <div><dt>Delay to Earth</dt><dd>under 1 second</dd></div>
+            <div><dt>Special challenge</dt><dd>Space debris, an eclipse every orbit and the South Atlantic Anomaly over Brazil</dd></div>
+          </dl>
+        </div>
+      </div>
+      <p class="footnote center">Mars has a thin atmosphere that blocks part of the radiation. The Moon has none. That is why the daily dose on the Moon is about double.</p>
+    </div>
+  </section>
+
+
+  <!-- MISSÕES -->
+  <section class="band-dark missions-sec" id="missoes" aria-labelledby="mis-h">
+    <div class="wrap">
+      <p class="eyebrow-c dark">Real missions</p>
+      <h2 class="headline" id="mis-h">Every mission has its patch.</h2>
+      <p class="body-lg center narrow dim">Just like at NASA, every mission gets an emblem. All of them recreate missions or routines that really happened, and you only earn the patch by completing the whole checklist.</p>
+      <div class="patch-grid" id="patch-grid"></div>
+      <div class="hero-ctas center"><button class="btn btn-blue" data-play>Open the Mission Center</button></div>
+    </div>
+  </section>
+
+  <!-- QUEM FAZ -->
+  <section class="band-white eco" aria-labelledby="eco-h">
+    <div class="wrap">
+      <p class="eyebrow-c">Who is behind it</p>
+      <h2 class="headline" id="eco-h">A LIASTRA initiative.</h2>
+      <div class="eco-grid">
+        <article class="eco-card eco-main"><img src="assets/liastra-logo.png" alt="LIASTRA Institute"><p>The <b>LIASTRA Institute</b> is the organization behind the project. Motto: <i>Per Cognitionem ad Innovationem</i>, through knowledge to innovation.</p></article>
+        <article class="eco-card"><img src="assets/aic-logo.png" alt="Aerospace Innovation Center"><p>LIASTRA’s <b>Aerospace Innovation Center</b> owns the game’s bases: AIC Base Jezero on Mars and AIC Base Shackleton on the Moon.</p></article>
+        <article class="eco-card"><img src="assets/icbs-logo.png" alt="ICBS"><p>The <b>ICBS</b>, International Center for Biomedical &amp; Space Sciences, is LIASTRA’s research center. It runs the labs where you analyze samples and run experiments.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- DADOS -->
+  <section class="band-dark data-sec" id="dados" aria-labelledby="data-h">
+    <div class="wrap">
+      <p class="eyebrow-c dark">NASA data</p>
+      <h2 class="headline" id="data-h">The game’s Sun is the real Sun.</h2>
+      <p class="body-lg center narrow dim">Each bar is a day. Its height shows the fastest coronal mass ejection DONKI recorded that day. In the game, yellow and red days raise the chance of a particle storm at your base.</p>
+
+      <div class="sw-card">
+        <div class="sw-head">
+          <span class="sw-status" id="sw-status">Loading…</span>
+          <span class="sw-legend"><i class="lg-low"></i>calm, up to 499 km/s<i class="lg-mid"></i>active, 500 to 799<i class="lg-high"></i>dangerous, 800 or more</span>
+        </div>
+        <div class="sw-chart" id="sw-chart" role="img" aria-label="Maximum CME speed per day"></div>
+        <div class="sw-foot">
+          <div><span class="sw-n mono" id="sw-count">—</span><span>ejections recorded</span></div>
+          <div><span class="sw-n mono" id="sw-max">—</span><span>km/s, the fastest</span></div>
+          <div><span class="sw-n mono" id="sw-dist">—</span><span>million km to Mars today</span></div>
+        </div>
+      </div>
+
+      <div class="sources">
+        <article>
+          <h3>DONKI · space weather</h3>
+          <p>Coronal mass ejections from the last 30 days, via NASA’s public API. If the connection fails, the game uses a real archive downloaded on 11/14/2026 and says so on screen.</p>
+          <a href="https://kauai.ccmc.gsfc.nasa.gov/DONKI/" target="_blank" rel="noopener">kauai.ccmc.gsfc.nasa.gov/DONKI</a>
+        </article>
+        <article>
+          <h3>Curiosity · RAD</h3>
+          <p>The daily dose on Mars (0.67 mSv) comes from the Curiosity rover’s radiation detector. The May 2024 storm it measured inspires the solar storm card.</p>
+          <a href="https://doi.org/10.1126/science.1244797" target="_blank" rel="noopener">Hassler et al., Science 2014</a>
+        </article>
+        <article>
+          <h3>Lunar surface</h3>
+          <p>The daily dose on the Moon (1.37 mSv) is the first measurement made on the lunar surface itself, by the Chang’e 4 lander.</p>
+          <a href="https://doi.org/10.1126/sciadv.aaz1334" target="_blank" rel="noopener">Zhang et al., Science Advances 2020</a>
+        </article>
+        <article>
+          <h3>Biology and health in space</h3>
+          <p>Facts about plants, regolith and astronaut health come from research like that gathered in NASA’s Open Science Data Repository.</p>
+          <a href="https://osdr.nasa.gov/" target="_blank" rel="noopener">osdr.nasa.gov</a>
+        </article>
+        <article>
+          <h3>Planet positions</h3>
+          <p>The Mars delay is calculated in your browser with orbital elements published by JPL. It changes every day.</p>
+          <a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html" target="_blank" rel="noopener">JPL · approximate positions</a>
+        </article>
+        <article>
+          <h3>What is simplified</h3>
+          <p>To fit into a few minutes, missions are sped up. The 50 mSv limit is a game training limit; NASA’s real career limit is 600 mSv. Storm doses and crop growth times are teaching estimates.</p>
+        </article>
+      </div>
+
+      <details class="key-box">
+        <summary>Have an api.nasa.gov key? Use yours.</summary>
+        <form id="key-form" class="key-form">
+          <label for="key-in">The DEMO_KEY allows only a few requests per hour. A personal key is free at api.nasa.gov and is stored only in this browser.</label>
+          <div class="key-row">
+            <input id="key-in" type="text" autocomplete="off" spellcheck="false" placeholder="Paste your key here">
+            <button class="btn btn-blue btn-sm" type="submit">Save and reload</button>
+          </div>
+        </form>
+      </details>
+    </div>
+  </section>
+
+  <!-- EDUCADORES -->
+  <section class="band-white edu" id="educadores" aria-labelledby="edu-h">
+    <div class="wrap">
+      <p class="eyebrow-c">For schools and families</p>
+      <h2 class="headline" id="edu-h">Made to play together.</h2>
+      <div class="edu-grid">
+        <article>
+          <h3>Three levels</h3>
+          <p><b>Cadet</b> (ages 7–9) has slower consumption and 3 sols. <b>Commander</b> (ages 10–12) has 4. <b>Flight Director</b> has 6 sols and is good for teens and adults.</p>
+        </article>
+        <article>
+          <h3>Hard words explained on the spot</h3>
+          <p>Sol, radiation, millisievert, regolith, CME. Tap any underlined term and a short explanation appears.</p>
+        </article>
+        <article>
+          <h3>A report for the class</h3>
+          <p>At the end, the game shows a chart of the resources, the decisions and what the mission taught. One button copies it all to paste on the board or in the class chat.</p>
+        </article>
+      </div>
+      <div class="discuss">
+        <h3>Questions to discuss afterwards</h3>
+        <ul>
+          <li>Why does the Moon get more radiation than Mars?</li>
+          <li>Why will astronauts on Mars need to solve problems on their own?</li>
+          <li>Which choice looked safe but cost a lot later?</li>
+          <li>What would you do differently on the next mission?</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="band-light faq" aria-labelledby="faq-h">
+    <div class="wrap narrow">
+      <h2 class="headline-sm" id="faq-h">Frequently asked questions</h2>
+      <details><summary>Do I need to pay or create an account?</summary><p>No. The game runs entirely in the browser. Progress (stars and patches) is stored only on your device.</p></details>
+      <details><summary>Is the data really real?</summary><p>Yes. Space weather comes from NASA’s DONKI API. When the page can connect, the data is live; when it can’t, we use a real archive downloaded on 11/14/2026, and the screen says which one is in use. Daily radiation doses come from published measurements. Some game rules are simplified to fit a short session, and we explain which in the data section.</p></details>
+      <details><summary>Why only three resources?</summary><p>Kids learn best when they can keep track of everything at once. Energy, air and water, and food already create hard choices. Radiation, science and suit oxygen appear as gauges alongside.</p></details>
+      <details><summary>Does it work on phones and tablets?</summary><p>Yes. On a phone, drag the left side of the screen to move and the right side to look; a big button lets you interact. On a computer, use W A S D, the mouse and the E key. It needs a browser with WebGL, which almost every current device has.</p></details>
+      <details><summary>Who made it?</summary><p>The LIASTRA team, for the NASA Space Apps Challenge 2026. It is an independent educational project and not an official NASA product.</p></details>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="band-dark final">
+    <div class="wrap center">
+      <h2 class="display-sm">Your crew is waiting.</h2>
+      <div class="hero-ctas center">
+        <button class="btn btn-blue" data-play="mars">Play on Mars</button>
+        <button class="btn btn-ghost-light" data-play="moon">Play on the Moon</button>
+        <button class="btn btn-ghost-light" data-play="orbit">Play in Orbit</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-logos"><img src="assets/liastra-logo.png" alt="LIASTRA Institute"><img src="assets/aic-logo.png" alt="Aerospace Innovation Center"><img src="assets/icbs-logo.png" alt="ICBS"></div>
+    <p>Mission Liastra · Junior Astronaut Mission Trainer. A LIASTRA Institute initiative, with the Aerospace Innovation Center and ICBS, for the NASA Space Apps Challenge 2026. Not an official NASA product and not endorsed by the agency.</p>
+    <p>Data: NASA DONKI (CCMC), NASA Open APIs, NASA/JPL, NASA OSDR, NASA Science; Hassler et al. 2014; Zhang et al. 2020; Paul et al. 2022; Garrett-Bakelman et al. 2019.</p>
+  </div>
+</footer>
+
+<div id="game" class="game" hidden role="dialog" aria-modal="true" aria-label="Mission Liastra game"></div>
+
+<script src="js/i18n.js?v=20"></script>
+<script src="js/donki-archive.js?v=20"></script>
+<script src="js/data.js?v=20"></script>
+<script src="js/spaceweather.js?v=20"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script src="js/assets.js?v=20"></script>
+<script src="js/engine3d.js?v=20"></script>
+<script src="js/worlds3d.js?v=20"></script>
+<script src="js/events3d.js?v=20"></script>
+<script src="js/missions.js?v=20"></script>
+<script src="js/farm.js?v=20"></script>
+<script src="js/lang-en.js?v=20"></script>
+<script src="js/game3d.js?v=20"></script>
+<script src="js/site.js?v=20"></script>
+</body>
+</html>
