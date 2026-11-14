@@ -775,8 +775,10 @@ kbd { display: inline-grid; place-items: center; min-width: 24px; height: 24px; 
 .eco-card img { height: 90px; width: 100%; object-fit: contain; object-position: left center; mix-blend-mode: multiply; }
 .eco-main img { height: 140px; }
 .eco-card p { margin: 0; color: var(--gray); font-size: 15.5px; }
-.foot-logos { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
-.foot-logos img { height: 44px; width: auto; mix-blend-mode: multiply; opacity: .9; }
+.foot-logos { display: flex; gap: 34px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+.foot-logos img { height: 50px; width: auto; mix-blend-mode: multiply; opacity: .92; }
+.foot-logos img[src*="aic-logo"] { height: 62px; }
+.foot-logos img[src*="icbs-logo"] { height: 58px; }
 @media (max-width: 900px) { .eco-grid { grid-template-columns: 1fr; } }
 @media (max-width: 900px) {
   .hud-clock { right: calc(108px + env(safe-area-inset-right, 0px)); max-width: calc(100% - 310px); }
@@ -827,5 +829,5 @@ div.crop { cursor: default; } div.crop.got { border-color: rgba(255, 209, 102, .
 .sens-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; margin-top: 20px; padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,.05); font-size: 14px; }
 .sens-row input { width: 100%; accent-color: var(--blue); }
 .sens-row b { font-variant-numeric: tabular-nums; min-width: 3.2em; text-align: right; }
-.hero-logo { display: block; width: min(360px, 78vw); height: auto; margin: 0 auto 26px; opacity: .95; }
+.hero-logo { display: block; width: min(230px, 60vw); height: auto; margin: 0 auto 28px; opacity: .95; }
 @media (max-width: 760px) { .brand { font-size: 13px; } }
