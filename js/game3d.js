@@ -161,6 +161,7 @@
     if (S) S.paused = true;
     ui.card.scrollTop = 0;
   }
+  function relock() { if (!eng || isTouch() || eng.noLock || eng.locked) return; try { const p = eng.canvas.requestPointerLock(); if (p && p.catch) p.catch(() => {}); } catch (e) {} }
   function closeModal() {
     ui.modal.hidden = true;
     if (eng) eng.paused = false;
@@ -994,7 +995,7 @@
     if (a === 'sleep') { closeModal(); S.sleeping = true; toast(L('Zzz… o tempo está passando rápido.', 'Zzz… time is passing quickly.'), 'info', 3000); return; }
     if (a === 'tablet') { if (S) tablet(); return; }
     if (a === 'pause') { pauseMenu(); return; }
-    if (a === 'resume') { closeModal(); return; }
+    if (a === 'resume') { closeModal(); relock(); return; }
     if (a === 'sound') { soundOn = !soundOn; store.set('liastra.sound', soundOn); pauseMenu(); return; }
     if (a === 'again') { loadMission(M.id); return; }
     if (a === 'copy') { copySummary(act); return; }
@@ -1003,7 +1004,12 @@
   function pauseMenu() {
     if (!S) return;
     openModal(`<div class="power-head"><div><p class="eyebrow">${L('Pausa', 'Paused')} · ${M.code}</p><h2>${L('Missão em pausa', 'Mission paused')}</h2></div><button class="icon-btn" data-act="resume" aria-label="${L('Continuar', 'Resume')}">${I.close}</button></div>
-      <div class="end-actions"><button class="btn-primary" data-act="resume">${L('Continuar', 'Resume')}</button><button class="btn-ghost" data-act="tablet">${L('Tablet da missão', 'Mission tablet')}</button><button class="btn-ghost" data-act="tutorial">${L('Como jogar', 'How to play')}</button><button class="btn-ghost" data-act="sound">${soundOn ? L('Desligar som', 'Sound off') : L('Ligar som', 'Sound on')}</button><button class="btn-ghost" data-act="center">${L('Central de missões', 'Mission Center')}</button><button class="btn-ghost" data-act="close">${L('Sair do jogo', 'Quit the game')}</button></div>`);
+      <div class="end-actions"><button class="btn-primary" data-act="resume">${L('Continuar', 'Resume')}</button><button class="btn-ghost" data-act="tablet">${L('Tablet da missão', 'Mission tablet')}</button><button class="btn-ghost" data-act="tutorial">${L('Como jogar', 'How to play')}</button><button class="btn-ghost" data-act="sound">${soundOn ? L('Desligar som', 'Sound off') : L('Ligar som', 'Sound on')}</button><button class="btn-ghost" data-act="center">${L('Central de missões', 'Mission Center')}</button><button class="btn-ghost" data-act="close">${L('Sair do jogo', 'Quit the game')}</button></div>
+      ${isTouch() ? '' : `<div class="sens-row"><label for="sens-in">${L('Sensibilidade do mouse', 'Mouse sensitivity')}</label><input id="sens-in" type="range" min="0.5" max="5" step="0.1" value="${eng.sensMul}"><b id="sens-val">${eng.sensMul.toFixed(1)}×</b></div>
+      <p class="note">${L('Aperte <kbd>Esc</kbd> para pausar e para continuar.', 'Press <kbd>Esc</kbd> to pause and to resume.')}</p>`}`);
+    ui.pausedAt = performance.now();
+    const si = ui.card.querySelector('#sens-in');
+    if (si) si.addEventListener('input', () => { eng.sensMul = +si.value; store.set('liastra.sens', eng.sensMul); ui.card.querySelector('#sens-val').textContent = eng.sensMul.toFixed(1) + '×'; });
   }
   function bindTouchButtons() {
     const set = (b, v) => { const k = b.dataset.tb; if (k === 'act') onInteract(v); if (k === 'up') eng.btnUp = v; if (k === 'down') eng.btnDown = v; };
@@ -1027,7 +1033,7 @@
       document.documentElement.classList.add('game-open');
       if (!root.dataset.built) {
         buildDOM(); root.dataset.built = '1';
-        try { eng = new Engine3D.Engine(ui.canvasBox); }
+        try { eng = new Engine3D.Engine(ui.canvasBox); eng.sensMul = +store.get('liastra.sens', 2.2) || 2.2; }
         catch (err) { ui.card.innerHTML = `<h2>${L('Não foi possível iniciar o 3D', 'Could not start 3D')}</h2><p class="lead">${L('Este navegador não ativou o WebGL. Tente outro navegador ou atualize o aparelho.', 'This browser did not enable WebGL. Try another browser or update your device.')}</p><button class="btn-primary" data-act="close">${L('Fechar', 'Close')}</button>`; ui.modal.hidden = false; document.addEventListener('click', onClick); return; }
         eng.onInteract = onInteract;
         eng.onFrame = (dt) => {
@@ -1042,7 +1048,7 @@
         document.addEventListener('click', onClick);
         document.addEventListener('keydown', (e) => {
           if (root.hidden) return;
-          if (e.key === 'Escape') { if (document.getElementById('term-pop')) { hideTerm(); return; } if (S && !ui.modal.hidden && !S.outcome && !S.current && ui.card.querySelector('[data-act="close-modal"],[data-act="resume"]')) { closeModal(); return; } }
+          if (e.key === 'Escape') { if (document.getElementById('term-pop')) { hideTerm(); return; } if (S && !S.outcome && ui.modal.hidden && !S.sleeping) { e.preventDefault(); pauseMenu(); return; } if (S && !ui.modal.hidden && !S.outcome && !S.current && ui.card.querySelector('[data-act="close-modal"],[data-act="resume"]')) { if (ui.pausedAt && performance.now() - ui.pausedAt < 400) return; const wasPause = !!ui.card.querySelector('[data-act="resume"]'); closeModal(); if (wasPause) relock(); return; } }
           if (e.code === 'Tab' && S && !ui.modal.hidden && !S.current && !S.outcome) { e.preventDefault(); closeModal(); }
           if (e.code === 'KeyE' && S && !ui.modal.hidden && (ui.card.querySelector('.power') || ui.card.querySelector('.farm'))) closeModal();
         });

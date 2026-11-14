@@ -824,3 +824,6 @@ div.crop { cursor: default; } div.crop.got { border-color: rgba(255, 209, 102, .
 .clk-farm { display: inline-flex; align-items: center; gap: 2px; color: #9df0bf; }
 .clk-farm svg { width: 14px; height: 14px; }
 @media (max-width: 700px) { .farm-env, .crop-now { grid-template-columns: 1fr; } }
+.sens-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; margin-top: 20px; padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,.05); font-size: 14px; }
+.sens-row input { width: 100%; accent-color: var(--blue); }
+.sens-row b { font-variant-numeric: tabular-nums; min-width: 3.2em; text-align: right; }

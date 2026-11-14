@@ -388,7 +388,7 @@
     window.addEventListener('mousemove', (e) => {
       if (!this.running) return;
       if (this.locked) { this.lookDelta.x += e.movementX; this.lookDelta.y += e.movementY; }
-      else if (dragging) { this.lookDelta.x += (e.clientX - lx) * 1.4; this.lookDelta.y += (e.clientY - ly) * 1.4; lx = e.clientX; ly = e.clientY; }
+      else if (dragging) { this.lookDelta.x += (e.clientX - lx) * 1.2; this.lookDelta.y += (e.clientY - ly) * 1.2; lx = e.clientX; ly = e.clientY; }
     });
     document.addEventListener('pointerlockchange', () => { this.locked = document.pointerLockElement === c; if (this.onLockChange) this.onLockChange(this.locked); });
     document.addEventListener('pointerlockerror', () => { this.noLock = true; });
@@ -456,7 +456,7 @@
   };
 
   Engine.prototype.step = function (dt) {
-    const sens = 0.0024;
+    const sens = 0.0024 * (this.sensMul || 2.2);
     if (this.mode !== 'drive') { this.yaw -= this.lookDelta.x * sens; this.pitch = clamp(this.pitch - this.lookDelta.y * sens, -1.45, 1.45); }
     else this.camYawOff = clamp((this.camYawOff || 0) - this.lookDelta.x * sens, -2.5, 2.5);
     this.lookDelta.x = 0; this.lookDelta.y = 0;
