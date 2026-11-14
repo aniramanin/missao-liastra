@@ -57,9 +57,9 @@
   const plain = (t) => t.replace(/\[\[([^|\]]+)\|[^\]]+\]\]/g, '$1');
 
   const LV = {
-    cadete: { id: 'cadete', name: L('Cadete', 'Cadet'), ages: L('7 a 9 anos', 'ages 7–9'), sols: 3, drain: 0.75, doseLimit: 50, sciGoal: 80, SOL: 210 },
-    comandante: { id: 'comandante', name: L('Comandante', 'Commander'), ages: L('10 a 12 anos', 'ages 10–12'), sols: 4, drain: 1.0, doseLimit: 50, sciGoal: 120, SOL: 200 },
-    diretor: { id: 'diretor', name: L('Diretor de Voo', 'Flight Director'), ages: L('adolescentes e adultos', 'teens and adults'), sols: 6, drain: 1.12, doseLimit: 50, sciGoal: 190, SOL: 190 }
+    cadete: { id: 'cadete', name: L('Cadete', 'Cadet'), ages: L('para começar', 'for beginners'), sols: 3, drain: 0.75, doseLimit: 50, sciGoal: 80, SOL: 210 },
+    comandante: { id: 'comandante', name: L('Comandante', 'Commander'), ages: L('desafio médio', 'medium challenge'), sols: 4, drain: 1.0, doseLimit: 50, sciGoal: 120, SOL: 200 },
+    diretor: { id: 'diretor', name: L('Diretor de Voo', 'Flight Director'), ages: L('desafio máximo', 'toughest challenge'), sols: 6, drain: 1.12, doseLimit: 50, sciGoal: 190, SOL: 190 }
   };
   const MAX = { life: 5, food: 5, shield: 2, sci: 4 };
   const STORM_WARN = 25, STORM_LEN = 30, SUIT_TIME = 150;
@@ -183,7 +183,7 @@
     openModal(`
       <div class="mc">
         <div class="mc-head">
-          <div class="mc-brand"><img src="${ASSETS.shield}" alt=""><div><strong>${L('Central de Missões', 'Mission Center')}</strong><small>LIASTRA · Aerospace Innovation Center</small></div></div>
+          <div class="mc-brand"><img src="${ASSETS.aicEmblem}" alt=""><div><strong>${L('Central de Missões', 'Mission Center')}</strong><small>LIASTRA · Aerospace Innovation Center</small></div></div>
           <div class="mc-actions"><button class="btn-ghost sm" data-act="tutorial">${L('Como jogar', 'How to play')}</button><button class="icon-btn" data-act="close" aria-label="${L('Fechar o jogo', 'Close the game')}">${I.close}</button></div>
         </div>
         <div class="mc-intro">
@@ -246,7 +246,7 @@
     openModal(`
       <div class="tut">
         <div class="tut-dots">${TUT.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</div>
-        ${s.img ? `<img class="tut-logo" src="${ASSETS.shield}" alt="">` : ''}
+        ${s.img ? `<img class="tut-logo" src="${ASSETS.aicEmblem}" alt="">` : ''}
         <h2>${s.t}</h2><p class="lead">${s.b}</p>
         ${i === 4 ? `<div class="tut-res">${[['bolt', L('Bateria', 'Battery'), '#ffd166'], ['air', L('Ar e água', 'Air & water'), '#4cc3ff'], ['leaf', L('Comida', 'Food'), '#5bd48a'], ['rad', L('Radiação', 'Radiation'), '#ff9f43'], ['flask', L('Ciência', 'Science'), '#b392ff']].map(([ic, l, c]) => `<span style="--c:${c}">${I[ic]}${l}</span>`).join('')}</div>` : ''}
         <div class="end-actions">
@@ -947,7 +947,7 @@
     return `<figure class="chart"><svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="${L('Recursos ao longo da missão', 'Resources during the mission')}">${[0, 50, 100].map((v) => `<line x1="${pad}" x2="${W - pad}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${pad - 6}" y="${y(v) + 4}" text-anchor="end" class="axis">${v}</text>`).join('')}${line('life', '#4cc3ff')}${line('food', '#5bd48a')}${line('battery', '#ffd166')}</svg><figcaption><span style="--c:#4cc3ff">${L('Ar e água', 'Air & water')}</span><span style="--c:#5bd48a">${L('Comida', 'Food')}</span><span style="--c:#ffd166">${L('Bateria', 'Battery')}</span></figcaption></figure>`;
   }
   function copySummary(btn) {
-    const txt = [`${L('Missão Liastra', 'Mission Liastra')} · ${M.code} · ${M.title} (${WORLD_NAME[M.world]})`, `${L('Resultado', 'Result')}: ${S.outcome.win ? L('missão cumprida', 'mission accomplished') : L('missão encerrada', 'mission ended')} · ${S.outcome.stars}/3 ${L('estrelas', 'stars')}`, `${L('Ciência', 'Science')}: ${Math.round(S.sci)} · ${L('Radiação', 'Radiation')}: ${num(S.dose)} mSv · EVA: ${Math.round(S.evaSecs)} s · ${L('Colheitas', 'Harvests')}: ${S.harvests}`, '', L('Tarefas concluídas:', 'Tasks completed:'), ...S.log.map((l) => `- ${l.t}`), '', L('Base real: ', 'Real basis: ') + M.basis].join('\n');
+    const txt = [`${'Aerospace Innovation Center'} · ${M.code} · ${M.title} (${WORLD_NAME[M.world]})`, `${L('Resultado', 'Result')}: ${S.outcome.win ? L('missão cumprida', 'mission accomplished') : L('missão encerrada', 'mission ended')} · ${S.outcome.stars}/3 ${L('estrelas', 'stars')}`, `${L('Ciência', 'Science')}: ${Math.round(S.sci)} · ${L('Radiação', 'Radiation')}: ${num(S.dose)} mSv · EVA: ${Math.round(S.evaSecs)} s · ${L('Colheitas', 'Harvests')}: ${S.harvests}`, '', L('Tarefas concluídas:', 'Tasks completed:'), ...S.log.map((l) => `- ${l.t}`), '', L('Base real: ', 'Real basis: ') + M.basis].join('\n');
     const done = () => { btn.textContent = L('Resumo copiado', 'Summary copied'); };
     try { navigator.clipboard.writeText(txt).then(done, fb); } catch (e) { fb(); }
     function fb() { const ta = document.createElement('textarea'); ta.value = txt; ta.style.position = 'absolute'; ta.style.left = '-9999px'; root.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove(); }

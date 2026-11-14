@@ -32,7 +32,7 @@ window.SITES = {
     solName: 'sol',
     dayLength: '24 h 39 min',
     gravity: '38% da Terra',
-    gravityNote: 'Uma criança de 30 kg sentiria pesar uns 11 kg.',
+    gravityNote: 'Uma pessoa de 70 kg sentiria pesar uns 27 kg.',
     temp: '−60 °C em média',
     dailyDose: 0.67,           // mSv/dia · Curiosity RAD (Hassler 2014)
     stormDose: 16,             // mSv, tempestade de partículas sem proteção (estimativa didática)
@@ -52,7 +52,7 @@ window.SITES = {
     solName: 'dia',
     dayLength: '29,5 dias terrestres (um ciclo de luz)',
     gravity: '17% da Terra',
-    gravityNote: 'Uma criança de 30 kg sentiria pesar uns 5 kg.',
+    gravityNote: 'Uma pessoa de 70 kg sentiria pesar uns 12 kg.',
     temp: 'de −170 °C a +120 °C',
     dailyDose: 1.37,           // mSv/dia · Chang'e 4 LND (Zhang 2020)
     stormDose: 30,             // sem atmosfera nem campo magnético: dose maior

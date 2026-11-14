@@ -3,21 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mission Liastra</title>
+<title>Aerospace Innovation Center</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="A 3D simulator for kids ages 7 to 12: live real missions on Mars, the Moon and a copy of the Space Station, with real NASA data.">
+<meta name="description" content="Aerospace Innovation Center: a 3D simulator for all ages. Live real missions on Mars, the Moon and a copy of the Space Station, with real NASA data.">
 <meta name="theme-color" content="#000000">
+<link rel="icon" type="image/png" href="assets/aic-emblem.png">
+<link rel="apple-touch-icon" href="assets/aic-emblem.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
-<link rel="stylesheet" href="css/styles.css?v=21">
+<link rel="stylesheet" href="css/styles.css?v=22">
 <link rel="alternate" hreflang="pt-BR" href="index.html">
 </head>
 <body>
 
 <nav class="nav" aria-label="Main">
   <div class="nav-in">
-    <a class="brand" href="#topo"><img class="brand-logo" src="assets/liastra-shield.png" alt="">Mission Liastra</a>
+    <a class="brand" href="#topo"><img class="brand-logo" src="assets/aic-emblem-white.png" alt="">Aerospace Innovation Center</a>
     <div class="nav-links">
       <a href="#como-funciona">How it works</a>
       <a href="#lua-marte">Three worlds</a>
@@ -35,9 +37,10 @@
   <!-- HERO -->
   <section class="hero band-dark">
     <div class="wrap hero-in">
+      <img class="hero-logo" src="assets/aic-logo-white.png" alt="Aerospace Innovation Center">
       <p class="kicker">NASA Space Apps Challenge 2026 · Junior Astronaut Mission Trainer</p>
       <h1 class="display">Live a mission<br><span class="grad">beyond Earth.</span></h1>
-      <p class="hero-sub">A 3D simulator for kids ages 7 to 12. Wake up at a base on Mars, walk on the Moon, float through a copy of the Space Station and complete real missions, each with its own patch. All with NASA data.</p>
+      <p class="hero-sub">A 3D simulator for all ages. Wake up at a base on Mars, walk on the Moon, float through a copy of the Space Station and complete real missions, each with its own patch. All with NASA data.</p>
       <div class="hero-ctas">
         <button class="btn btn-blue" data-play>Play now</button>
         <a class="link-more" href="#como-funciona">See how it works</a>
@@ -307,7 +310,7 @@
       <div class="edu-grid">
         <article>
           <h3>Three levels</h3>
-          <p><b>Cadet</b> (ages 7–9) has slower consumption and 3 sols. <b>Commander</b> (ages 10–12) has 4. <b>Flight Director</b> has 6 sols and is good for teens and adults.</p>
+          <p><b>Cadet</b> is for beginners: slower consumption and 3 sols. <b>Commander</b> has 4 sols. <b>Flight Director</b> has 6 sols and is the toughest challenge. Every level works for any age.</p>
         </article>
         <article>
           <h3>Hard words explained on the spot</h3>
@@ -358,17 +361,17 @@
 <footer class="footer">
   <div class="wrap">
     <div class="foot-logos"><img src="assets/liastra-logo.png" alt="LIASTRA Institute"><img src="assets/aic-logo.png" alt="Aerospace Innovation Center"><img src="assets/icbs-logo.png" alt="ICBS"></div>
-    <p>Mission Liastra · Junior Astronaut Mission Trainer. A LIASTRA Institute initiative, with the Aerospace Innovation Center and ICBS, for the NASA Space Apps Challenge 2026. Not an official NASA product and not endorsed by the agency.</p>
+    <p>Aerospace Innovation Center · Junior Astronaut Mission Trainer. A project of the Aerospace Innovation Center, part of the LIASTRA Institute, with ICBS, for the NASA Space Apps Challenge 2026. Not an official NASA product and not endorsed by the agency.</p>
     <p>Data: NASA DONKI (CCMC), NASA Open APIs, NASA/JPL, NASA OSDR, NASA Science; Hassler et al. 2014; Zhang et al. 2020; Paul et al. 2022; Garrett-Bakelman et al. 2019.</p>
   </div>
 </footer>
 
-<div id="game" class="game" hidden role="dialog" aria-modal="true" aria-label="Mission Liastra game"></div>
+<div id="game" class="game" hidden role="dialog" aria-modal="true" aria-label="Aerospace Innovation Center game"></div>
 
-<script src="js/i18n.js?v=21"></script>
-<script src="js/donki-archive.js?v=21"></script>
-<script src="js/data.js?v=21"></script>
-<script src="js/spaceweather.js?v=21"></script>
+<script src="js/i18n.js?v=22"></script>
+<script src="js/donki-archive.js?v=22"></script>
+<script src="js/data.js?v=22"></script>
+<script src="js/spaceweather.js?v=22"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
@@ -376,14 +379,14 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
-<script src="js/assets.js?v=21"></script>
-<script src="js/engine3d.js?v=21"></script>
-<script src="js/worlds3d.js?v=21"></script>
-<script src="js/events3d.js?v=21"></script>
-<script src="js/missions.js?v=21"></script>
-<script src="js/farm.js?v=21"></script>
-<script src="js/lang-en.js?v=21"></script>
-<script src="js/game3d.js?v=21"></script>
-<script src="js/site.js?v=21"></script>
+<script src="js/assets.js?v=22"></script>
+<script src="js/engine3d.js?v=22"></script>
+<script src="js/worlds3d.js?v=22"></script>
+<script src="js/events3d.js?v=22"></script>
+<script src="js/missions.js?v=22"></script>
+<script src="js/farm.js?v=22"></script>
+<script src="js/lang-en.js?v=22"></script>
+<script src="js/game3d.js?v=22"></script>
+<script src="js/site.js?v=22"></script>
 </body>
 </html>

@@ -1,12 +1,14 @@
-# Missão Liastra · Junior Astronaut Mission Trainer
+# Aerospace Innovation Center · Junior Astronaut Mission Trainer
 
-Jogo de estratégia para crianças de 7 a 12 anos, feito para o desafio
+Simulador 3D para todas as idades, feito para o desafio
 [Build a Junior Astronaut Mission Trainer](https://www.spaceappschallenge.org/2026/challenges/junior-astronaut-mission-trainer/)
 do NASA Space Apps Challenge 2026.
 
 **Jogar:** https://aniramanin.github.io/missao-liastra/ (português) · https://aniramanin.github.io/missao-liastra/en.html (English)
 
-Um simulador **3D em primeira pessoa** (Three.js, com bloom e reflexos de ambiente) em que a criança vive missões reais.
+Um simulador **3D em primeira pessoa** (Three.js, com bloom e reflexos de ambiente) em que o jogador vive missões reais.
+
+**Projeto:** Aerospace Innovation Center (AIC), do LIASTRA Institute. Logo e emblema em `assets/aic-*.png`.
 
 **Quem faz:** LIASTRA Institute. As bases pertencem ao **Aerospace Innovation Center (AIC)**, do LIASTRA. Os laboratórios são do **ICBS** (International Center for Biomedical & Space Sciences), o centro de pesquisa do LIASTRA. As três logos aparecem no site e dentro do jogo (placa da base, casco, Comando, Laboratório ICBS, módulos da estação).
 
@@ -63,7 +65,7 @@ Depois abra http://localhost:8765 (ou http://localhost:8765/en.html). O site est
 | 5 sinais vitais + 3 materiais + árvore de tecnologia | 3 recursos principais + radiação, ciência e oxigênio do traje |
 | Sem radiação, sem atraso de comunicação | Tempestades do Sol real (DONKI), abrigo, escudo d'água, atraso Terra–Marte calculado no dia |
 | Números inventados | Doses medidas por rovers e sondas, eventos baseados em fatos reais com fonte |
-| Sem níveis | Cadete (7–9), Comandante (10–12) e Diretor de Voo |
+| Sem níveis | Cadete (para começar), Comandante e Diretor de Voo (desafio máximo) |
 
 ## Dados da NASA usados e por quê
 
