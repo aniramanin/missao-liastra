@@ -456,7 +456,7 @@
         mg.add(lab);
       }
       const Rn = rand(md.id.length * 31 + 7);
-      if (!['cupola', 'cargo'].includes(md.id)) for (let i = 0; i < Math.round((alongX ? lx : lz) * 0.8); i++) {
+      if (!['cupola', 'cargo'].includes(md.id) && !md.node) for (let i = 0; i < Math.round((alongX ? lx : lz) * 0.8); i++) {
         const along = (alongX ? b[0] : b[4]) + 0.6 + Rn() * ((alongX ? lx : lz) - 1.2);
         const side = Rn() > 0.5 ? 1 : -1, s = 0.25 + Rn() * 0.2, y = b[2] + 0.4 + Rn() * 1.2;
         const half = md.node ? N : H;
@@ -467,19 +467,19 @@
     });
 
     // tampas: escotilha de acoplamento no piso do Nó 1 e escotilha externa da Quest
-    const hatchMat = new T.MeshStandardMaterial({ color: 0x9fb0c8, metalness: 0.6, roughness: 0.35 });
+    const hatchMat = new T.MeshStandardMaterial({ color: 0x9fb0c8, metalness: 0.4, roughness: 0.65 });
     const cbmHatch = new T.Mesh(new T.CircleGeometry(0.95, 24), hatchMat); cbmHatch.rotation.x = -Math.PI / 2; cbmHatch.position.set(-4.5, -N + 0.02, 0); G.add(cbmHatch);
     const questHatch = new T.Mesh(new T.CircleGeometry(0.75, 24), hatchMat); questHatch.rotation.y = Math.PI; questHatch.position.set(-4.5, 0, 6.38); G.add(questHatch);
     const P = {}, inter = [];
     const add = (id, kind, pos, label, r = 2, hold = 0) => { P[id] = pos; inter.push({ id, kind, pos, label, r, hold }); };
     const laptop = (x, y, z, rotY, title, lines, color) => { const g = B.grp(G, x, z, rotY, y); B.box(g, 0.42, 0.02, 0.3, MAT.darker, 0, 0, 0, { cast: false }); const s = B.screen(g, title, lines, 0, 0.16, -0.14, 0, color, 0.42); s.rotation.x = -0.25; return g; };
     // Unity: mesa de refeições
-    const tbl = B.grp(G, -4.5, 0, 0, -N);
+    const tbl = B.grp(G, -2.8, 0, Math.PI / 2, -N); // fora da escotilha de acoplamento do piso
     B.box(tbl, 1.4, 0.06, 0.9, MAT.white, 0, 0.75, 0); B.cyl(tbl, 0.05, 0.05, 0.72, MAT.metal, 0, 0.37, 0, 8);
     for (let i = 0; i < 5; i++) B.box(tbl, 0.12, 0.18, 0.04, [MAT.orange, MAT.yellow, MAT.plant, MAT.blue, MAT.tomato][i], -0.4 + i * 0.2, 0.86, 0.1, { cast: false });
     B.box(tbl, 0.3, 0.35, 0.3, MAT.white, 0.55, 0.95, -0.3);
-    add('galley', 'galley', V(-4.5, -0.3, 0.4), 'Preparar e comer uma refeição', 2.2, 2.5);
-    B.plaque(G, LOGO.liastra(), 0.7, 0.7, -6.98, 0.6, -0.95, Math.PI / 2);
+    add('galley', 'galley', V(-2.9, -0.3, 0.2), 'Preparar e comer uma refeição', 2.2, 2.5);
+    B.plaque(G, LOGO.liastra(), 0.8, 0.8, -14, 0.35, -H + 0.012, 0); // Zarya, parede lateral (fora das escotilhas)
     // Destiny
     laptop(-1, -0.3, -0.85, 0, 'ENERGIA', ['8 asas solares', 'Baterias Li-íon'], '#ffd166');
     B.screen(G, 'ENERGIA', ['Asas: 8', 'Baterias: 24'], -1, 0.4, -H + 0.01, 0, '#ffd166', 0.8, 'chart');
@@ -492,13 +492,13 @@
     const cdra = B.co2Scrubber(G, 5.6, -H + 0.42, 0); cdra.position.y = -H; cdra.scale.setScalar(0.85);
     add('co2', 'co2', V(5.6, 0, -0.2), 'Trocar o filtro de CO₂ (CDRA)', 2, 2.5);
     const cevis = B.bike(G, 0.2, 0, Math.PI / 2); cevis.position.y = -H;
-    B.plaque(G, LOGO.aic(), 1.6, 0.5, 6.98, 0.55, 0, -Math.PI / 2);
+    B.plaque(G, LOGO.aic(), 1.6, 0.5, 6.0, 0.5, H - 0.012, Math.PI); // Destiny, parede lateral
     // Harmony: cabines
     [8.2, 11.8].forEach((x) => { B.box(G, 1.0, 0.05, 2.2, MAT.blanket, x, N - 0.04, 0, { cast: false }); B.box(G, 1.0, 0.05, 2.2, MAT.blanket, x, -N + 0.04, 0, { cast: false }); });
     B.box(G, 0.7, 0.12, 1.8, MAT.fabricBlue, 8.2, N - 0.12, 0);
     const cqs = B.screen(G, 'CABINES', ['Mais blindagem', 'Abrigo de radiação'], 10, N - 0.06, 0.9, 0, '#ffc94d', 0.9); cqs.rotation.set(Math.PI / 2, 0, Math.PI);
     add('bed', 'bed', V(8.2, 0.6, 0), 'Entrar no saco de dormir', 2.2, 1);
-    { const pp = imageTex(patchURI(mission || MISSIONS[4]), { max: 512 }); B.decal(G, pp, 1.0, 1.0, 12.98, 0.6, -0.95, -Math.PI / 2); }
+    { const pp = imageTex(patchURI(mission || MISSIONS[4]), { max: 512 }); B.decal(G, pp, 0.8, 0.8, -0.6, 0.45, H - 0.012, Math.PI); } // patch da missão no Destiny
     // Columbus
     const farm = [];
     [[10.62, 6.0, 'Veggie (Columbus)'], [10.62, -8.2, 'Advanced Plant Habitat (Kibo)']].forEach(([x, z, nm], i) => {
@@ -529,7 +529,7 @@
     add('treadmill', 'treadmill', V(-4.5, -0.2, -7.2), 'Correr na esteira T2', 2, 3);
     const ared = B.ared(G, -3.6, -3.0, -Math.PI / 2); ared.position.y = -1.1; ared.scale.setScalar(0.75);
     add('ared', 'ared', V(-4.0, 0, -3.0), 'Musculação no ARED', 1.8, 3);
-    const wrs = B.waterRecycler(G, -5.2, -6, Math.PI / 2); wrs.position.y = -1.1; wrs.scale.setScalar(0.7);
+    const wrs = B.waterRecycler(G, -5.2, -6.45, Math.PI / 2); wrs.position.y = -1.1; wrs.scale.setScalar(0.7);
     add('water', 'water', V(-4.6, 0, -6), 'Operar o reciclador de água', 1.8, 2.5);
     add('o2gen', 'o2gen', V(-4.6, 0.3, -5.2), 'Verificar o gerador de oxigênio', 1.6, 2.5);
     // Cúpula

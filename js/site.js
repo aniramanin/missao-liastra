@@ -199,7 +199,7 @@
     const site = b.dataset.play || undefined;
     Game.open({ site });
   }));
-  const fromHash = () => { if (location.hash === '#jogar') Game.open({}); };
+  const fromHash = () => { const m = location.hash.match(/^#(?:jogar|play)(?:=([\w-]+))?$/); if (m) Game.open(m[1] ? { mission: m[1] } : {}); };
   window.addEventListener('hashchange', fromHash);
   fromHash();
 

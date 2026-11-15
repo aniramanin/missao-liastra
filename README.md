@@ -30,6 +30,12 @@ Quatro tripulantes trabalham na base (dois na estação). Fale com eles para rec
 ### Idiomas
 Português (`index.html`) e inglês (`en.html`). As traduções do jogo ficam em `js/lang-en.js`; `js/i18n.js` escolhe o idioma pelo `lang` da página.
 
+### Jogabilidade
+- **Câmera em 1ª ou 3ª pessoa** (tecla V, botão no HUD ou menu de pausa). Na 3ª pessoa o avatar anda, flutua na Estação e veste o traje com capacete; em espaços apertados a câmera volta sozinha para a 1ª pessoa.
+- **Recompensas:** XP por missão (estrelas, patch novo e quiz), 7 patentes de astronauta, 11 medalhas e 7 cores de macacão desbloqueáveis para o avatar. O perfil aparece na Central de Missões.
+- **Idioma dentro do jogo:** botão PT/EN no HUD e no menu de pausa.
+- **Carregamento:** o terreno de Marte e da Lua é calculado uma vez por sessão (Marte: de 2,2 s para 0,4 s na primeira vez e 0,1 s depois), e a memória é liberada entre missões.
+
 ### Para professores e aprendizagem
 - **Guia do professor** em [português](teacher.html) e [inglês](teacher-en.html): objetivos, aula de 45 min, missões recomendadas, perguntas, rubrica e atividade sem computador.
 - **Quiz de 3 perguntas** no fim de cada missão (2 sobre o mundo e 1 geral), com explicação e placar no resumo da turma.
@@ -112,6 +118,7 @@ js/i18n.js            escolha de idioma (L, tr)
 js/lang-en.js         traduções do jogo para inglês
 js/farm.js            culturas da agricultura espacial
 js/learn.js           quiz de fim de missão e imagem do Sol ao vivo
+js/rewards.js         XP, patentes, medalhas e cores de traje
 teacher.html          guia do professor (PT) · teacher-en.html (EN)
 tools/gen_teacher.py  gera as páginas do guia do professor
 css/styles.css        estilos do site e do jogo

@@ -26,6 +26,7 @@
     moon: '<svg viewBox="0 0 24 24"><path d="M20 14A8 8 0 1 1 10 4a7 7 0 0 0 10 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>',
     suit: '<svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 21v-4a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v4" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
     close: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+    cam: '<svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 20c.6-4 3-6 6-6s5.4 2 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 4v4M3 4h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
     menu: '<svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
     tablet: '<svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 7h6M9 11h6M9 15h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
     hand: '<svg viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V12M11 11V4.5a1.5 1.5 0 0 1 3 0V12M14 11.5V6a1.5 1.5 0 0 1 3 0v8a7 7 0 0 1-7 7h-.5a6 6 0 0 1-4.6-2.2L3 15.5a1.5 1.5 0 0 1 2.3-1.9L8 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -125,7 +126,7 @@
         <div class="prompt" hidden></div>
         <div class="toasts" aria-live="polite"></div>
         <div class="suitbar" hidden></div>
-        <div class="lookhint" hidden>${L('Clique na tela para olhar ao redor · WASD para andar · E para interagir · Tab abre o tablet', 'Click the screen to look around · WASD to move · E to interact · Tab opens the tablet')}</div>
+        <div class="lookhint" hidden>${L('Clique na tela para olhar ao redor · WASD para andar · E para interagir · V muda a câmera · Tab abre o tablet', 'Click the screen to look around · WASD to move · E to interact · V switches camera · Tab opens the tablet')}</div>
         <div class="touchui" hidden>
           <div class="joy"><i></i></div>
           <button class="tb tb-act" data-tb="act" aria-label="${L('Interagir', 'Interact')}">${I.hand}</button>
@@ -133,6 +134,8 @@
           <button class="tb tb-down" data-tb="down" aria-label="${L('Descer', 'Go down')}" hidden>${I.down}</button>
         </div>
         <div class="g3d-btns" hidden>
+          <button class="icon-btn lang-btn" data-act="lang" aria-label="${L('Mudar para inglês', 'Switch to Portuguese')}">${L('EN', 'PT')}</button>
+          <button class="icon-btn" data-act="cam" aria-label="${L('Alternar 1ª e 3ª pessoa (V)', 'Switch 1st and 3rd person (V)')}" title="${L('Câmera: 1ª ou 3ª pessoa (V)', 'Camera: 1st or 3rd person (V)')}">${I.cam}</button>
           <button class="icon-btn" data-act="tablet" aria-label="${L('Tablet da missão', 'Mission tablet')}">${I.tablet}</button>
           <button class="icon-btn" data-act="pause" aria-label="Menu">${I.menu}</button>
         </div>
@@ -191,6 +194,7 @@
           <h2>${L('Escolha sua missão', 'Choose your mission')}</h2>
           <p class="lead">${L(`Cada missão reproduz uma missão ou rotina real. Complete o checklist para ganhar o patch da missão, como os astronautas de verdade. Patches conquistados: <b>${earned} de ${MISSIONS.length}</b>.`, `Each mission recreates a real mission or routine. Complete the checklist to earn the mission patch, just like real astronauts. Patches earned: <b>${earned} of ${MISSIONS.length}</b>.`)}</p>
         </div>
+        ${profileHtml()}
         ${['mars', 'moon', 'orbit'].map((w) => `
           <section class="mc-world" ${only === w ? 'data-focus="1"' : ''}>
             <h3><span class="planet planet-${w}"></span>${WORLD_NAME[w]}</h3>
@@ -292,6 +296,7 @@
       history: [], histT: 0, log: [], stormLog: [], askedEarth: 0, wasted: 0, batteryEmpty: false, minBar: 100, evaSecs: 0, seen: {}, outcome: null, deck: [], hold: 0
     };
     farmInit();
+    makeAvatar(sp);
     if (M.world === 'moon' && survival) S.shadow = [Math.min(lvl.sols, 2 + Math.floor(Math.random() * Math.max(1, lvl.sols - 2)))];
     world.setSuited(false);
     S.history.push(snap());
@@ -400,6 +405,30 @@
     const done = stepCheck('harvest') || stepCheck('veggie');
     if (!done || !ui.modal.hidden) farmPanel(i);
   }
+  /* ---------- avatar e câmera em 3ª pessoa ---------- */
+  function makeAvatar(sp) {
+    const orbit = M.world === 'orbit';
+    const av = Engine3D.B.crew(eng.scene, sp.x, sp.z, 0, { pose: orbit ? 'float' : 'stand', suit: Rewards.suit().color, skin: 0xc68a5e, hair: 0x3a2414, patch: Engine3D.imageTex(patchURI(M), { max: 256 }) });
+    const c = av.userData.crew;
+    const helmet = new T.Mesh(new T.SphereGeometry(0.2, 20, 14), new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.25, metalness: 0.2 }));
+    const visor = new T.Mesh(new T.SphereGeometry(0.205, 20, 14, -Math.PI * 0.35, Math.PI * 0.7, Math.PI * 0.3, Math.PI * 0.32), new T.MeshStandardMaterial({ color: 0xd8a640, roughness: 0.08, metalness: 0.9 }));
+    visor.rotation.y = Math.PI; helmet.add(visor); helmet.visible = false; c.head.add(helmet); c.helmet = helmet;
+    av.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+    eng.avatar = av; eng.thirdPerson = !!store.get('liastra.cam3', false); eng._camDist = undefined;
+    eng.camLimit = world.kind === 'ground' ? (q) => world.isInside(q) && q.y > 2.78 : null;
+    avatarSuit(false);
+  }
+  function avatarSuit(on) { const c = eng.avatar && eng.avatar.userData.crew; if (!c) return; c.suit.color.setHex(on ? 0xf2f2ef : Rewards.suit().color); if (c.helmet) c.helmet.visible = on; }
+  function toggleCam() {
+    if (!eng) return; eng.thirdPerson = !eng.thirdPerson; eng._camDist = undefined; store.set('liastra.cam3', eng.thirdPerson);
+    toast(eng.thirdPerson ? L('Câmera em 3ª pessoa. Aperte V para voltar.', 'Third-person camera. Press V to switch back.') : L('Câmera em 1ª pessoa.', 'First-person camera.'), 'info', 2500);
+  }
+  function switchLang() {
+    const goEn = LANG !== 'en', mid = M && M.id;
+    if (S && !S.outcome && !window.confirm(L('Mudar o idioma reinicia esta missão. Continuar?', 'Changing the language restarts this mission. Continue?'))) return;
+    const url = (goEn ? 'en.html' : 'index.html') + '#jogar' + (mid ? '=' + mid : '');
+    location.href = url;
+  }
   function farmGrow(amount) { const light = clamp(S.alloc.food / 3, 0, 1.4); S.farm.forEach((p) => { if (p.crop && p.t < 1) p.t = Math.min(1, p.t + amount * light); }); farmVisuals(true); return light; }
 
   /* ---------- checklist ---------- */
@@ -481,7 +510,7 @@
     S.life = clamp(S.life + lifeRate * dt, 0, 100); S.food = clamp(S.food + foodRate * dt, 0, 100);
     S.sci += a.sci * 5 * eff * (S.flags.antenna ? 1.3 : 1) / S.SOL * dt * (S.survival ? 1 : 0.4);
     farmTick(dt);
-    const inside = world.isInside(p);
+    const inside = world.isInside(p); eng.indoor = inside;
     if (inside !== S.wasInside) { if (!inside) toast(`${I.suit} ${L('Você está do lado de fora. O oxigênio do traje está sendo usado e a radiação é maior.', 'You are outside. The suit’s oxygen is being used and radiation is higher.')}`, 'info', 4500); else if (S.suited) toast(L('Dentro da base. O traje está recarregando. Tire o traje na estação de trajes quando terminar.', 'Back inside. The suit is recharging. Take it off at the suit station when you are done.'), 'ok', 3500); S.wasInside = inside; }
     S.inside = inside;
     if (!inside) { S.suit -= dt / SUIT_TIME * 100 * (eng.mode === 'drive' ? 0.45 : 1); S.evaSecs += dt; } else S.suit = Math.min(100, S.suit + dt * 30);
@@ -740,8 +769,8 @@
     if (k === 'rover') { if (eng.mode === 'drive') exitRover(); else { if (!S.suited) { toast(L('Vista o traje antes de sair da base.', 'Put on your suit before leaving the base.'), 'info'); return; } enterRover(); } return; }
     if (k === 'rws') return armGame();
     if (k === 'suit') {
-      if (!S.suited) { S.suited = true; world.setSuited(true); S.suit = 100; beep('ok'); toast(`${I.suit} ${L('Traje vestido e pré-respiração concluída. A escotilha externa está liberada.', 'Suit on and pre-breathe complete. The outer hatch is unlocked.')}`, 'ok', 5000); stepCheck('suit'); }
-      else { if (!S.inside) return; S.suited = false; world.setSuited(false); toast(L('Traje guardado e recarregando.', 'Suit stowed and recharging.'), 'ok', 3500); stepCheck('suitoff'); }
+      if (!S.suited) { S.suited = true; world.setSuited(true); avatarSuit(true); S.suit = 100; beep('ok'); toast(`${I.suit} ${L('Traje vestido e pré-respiração concluída. A escotilha externa está liberada.', 'Suit on and pre-breathe complete. The outer hatch is unlocked.')}`, 'ok', 5000); stepCheck('suit'); }
+      else { if (!S.inside) return; S.suited = false; world.setSuited(false); avatarSuit(false); toast(L('Traje guardado e recarregando.', 'Suit stowed and recharging.'), 'ok', 3500); stepCheck('suitoff'); }
       return;
     }
     if (k === 'leak') { if (S.leak && S.leak.spot === it.id) { S.leak = null; S.waits = []; doneTask('leak'); toast(L('Conserto feito! Tudo vedado.', 'Repair done! Everything sealed.'), 'ok'); } return; }
@@ -922,7 +951,9 @@
     let stars = 0;
     if (win) { stars = 1; if (S.survival ? S.sci >= S.lvl.sciGoal : S.minBar >= 35) stars++; if (S.survival ? (S.dose < S.lvl.doseLimit * 0.5 && S.minBar >= 20) : (S.dose < S.lvl.doseLimit * 0.3 && S.wasted < 3)) stars++; }
     S.outcome = { win, why, stars };
+    const firstPatch = win && !store.get('liastra.patches', {})[M.id];
     if (win) { const pp = store.get('liastra.patches', {}); pp[M.id] = Math.max(pp[M.id] || 0, stars); store.set('liastra.patches', pp); }
+    S.reward = grantRewards(win, stars, firstPatch);
     beep(win ? 'win' : 'bad');
     const whyTxt = { life: L('O ar e a água acabaram.', 'The air and water ran out.'), food: L('A comida acabou.', 'The food ran out.'), dose: L('A tripulação passou do limite de radiação.', 'The crew went over the radiation limit.') };
     const earned = Object.keys(store.get('liastra.patches', {})).filter((k) => MISSIONS.some((m) => m.id === k)).length;
@@ -931,6 +962,7 @@
       <h2>${win ? L(`Missão ${M.code} cumprida!`, `Mission ${M.code} accomplished!`) : L('Missão encerrada antes da hora', 'Mission ended early')}</h2>
       <p class="lead">${win ? (M.survival ? L(`A tripulação viveu ${S.lvl.sols} ${solWord()}s em ${S.site.place}.`, `The crew lived ${S.lvl.sols} ${solWord()}s at ${S.site.place}.`) : L(`Você completou as ${M.steps.length} tarefas, como numa missão real.`, `You completed all ${M.steps.length} tasks, just like a real mission.`)) : `${whyTxt[why]} ${L('A tripulação voltou para casa em segurança. Falhar faz parte do treino: tente de novo.', 'The crew got home safely. Failing is part of training: try again.')}`}</p>
       <div class="stars">${[0, 1, 2].map((k) => `<span class="${k < stars ? 'on' : ''}">${I.star}</span>`).join('')}</div>
+      <div class="rewards-box">${rewardHtml(S.reward)}</div>
       <div class="end-grid"><div class="stat"><span>${Math.round(S.sci)}</span><small>${L('ciência', 'science')}</small></div><div class="stat"><span>${num(S.dose)}</span><small>${L('mSv de radiação', 'mSv of radiation')}</small></div><div class="stat"><span>${S.harvests}</span><small>${L('colheitas', 'harvests')}</small></div></div>
       ${chart()}
       <h3>${L('O que esta missão ensinou', 'What this mission taught')}</h3><ul class="lessons">${lessons().map((l) => `<li>${l}</li>`).join('')}</ul>
@@ -938,6 +970,39 @@
       <p class="note">${L('Patches na sua coleção:', 'Patches in your collection:')} <b>${earned} ${L('de', 'of')} ${MISSIONS.length}</b>.</p>
       <div class="end-actions"><button class="btn-primary" data-act="center">${L('Central de missões', 'Mission Center')}</button><button class="btn-ghost" data-act="again">${L('Jogar de novo', 'Play again')}</button><button class="btn-ghost" data-act="copy">${L('Copiar resumo para a turma', 'Copy a summary for class')}</button></div>
     </div>`, 'wide');
+  }
+  /* ---------- recompensas ---------- */
+  function profileHtml() {
+    const p = Rewards.progress(), md = Rewards.medals(), cur = Rewards.suit();
+    return `<section class="mc-profile">
+      <div class="rw-rank"><span class="rw-badge">${p.i + 1}</span><div><small>${L('Sua patente', 'Your rank')}</small><strong>${p.name}</strong><div class="rw-bar"><i style="width:${Math.round(p.pct * 100)}%"></i></div><small>${p.xp} XP${p.next ? L(` · faltam ${p.toNext} para ${p.next}`, ` · ${p.toNext} to ${p.next}`) : ''}</small></div></div>
+      <div class="mc-medals" aria-label="${L('Medalhas', 'Medals')}">${Rewards.MEDALS.map((m) => `<span class="md${md[m.id] ? ' on' : ''}" title="${m.name}: ${m.desc}"><i>${m.icon}</i></span>`).join('')}<small>${Object.keys(md).length}/${Rewards.MEDALS.length} ${L('medalhas', 'medals')}</small></div>
+      <div class="mc-suits"><small>${L('Cor do macacão (3ª pessoa)', 'Jumpsuit colour (3rd person)')}</small>${Rewards.SUITS.map((u) => { const ok = u.rank <= p.i; return `<button type="button" class="sw${u.id === cur.id ? ' on' : ''}${ok ? '' : ' locked'}" style="--c:${u.css}" data-suit="${u.id}" ${ok ? '' : 'disabled'} title="${u.name}${ok ? '' : L(` · desbloqueia em ${Rewards.RANKS[u.rank].name}`, ` · unlocks at ${Rewards.RANKS[u.rank].name}`)}" aria-label="${u.name}"></button>`; }).join('')}</div>
+    </section>`;
+  }
+  function grantRewards(win, stars, firstPatch) {
+    const gain = win ? 100 + stars * 50 + (firstPatch ? 100 : 0) : 30;
+    const pp = store.get('liastra.patches', {}), has = (w) => MISSIONS.filter((m) => m.world === w && !m.survival).every((m) => pp[m.id]);
+    const ids = [];
+    if (win) ids.push('first');
+    if (win && stars === 3) ids.push('stars3');
+    if (Rewards.addHarvests(S.harvests) >= 10) ids.push('harvest');
+    if (win && S.stormLog.length) ids.push('storm');
+    if (S.evaSecs >= 60) ids.push('eva');
+    ['mars', 'moon', 'orbit'].forEach((w) => { if (has(w)) ids.push(w); });
+    if (win && M.survival) ids.push('survival');
+    if (MISSIONS.filter((m) => !m.survival).every((m) => pp[m.id])) ids.push('all');
+    const r = Rewards.award(gain, ids);
+    r.parts = win ? [[L('Missão cumprida', 'Mission accomplished'), 100], [L(`${stars} estrela(s)`, `${stars} star(s)`), stars * 50]].concat(firstPatch ? [[L('Patch novo', 'New patch'), 100]] : []) : [[L('Experiência de treino', 'Training experience'), 30]];
+    return r;
+  }
+  function rewardHtml(r) {
+    if (!r) return '';
+    const p = r.after;
+    return `<div class="rw"><div class="rw-xp"><b>+${r.gain} XP</b><span>${r.parts.map(([t, v]) => `${t} +${v}`).join(' · ')}</span></div>
+      <div class="rw-rank"><span class="rw-badge">${p.i + 1}</span><div><strong>${p.name}</strong><div class="rw-bar"><i style="width:${Math.round(p.pct * 100)}%"></i></div><small>${p.next ? L(`${p.toNext} XP para ${p.next}`, `${p.toNext} XP to ${p.next}`) : L('Patente máxima!', 'Top rank!')}</small></div></div>
+      ${r.rankUp ? `<p class="rw-up">${L('Nova patente!', 'New rank!')} <b>${p.name}</b>${r.unlocked.length ? L(` · traje desbloqueado: ${r.unlocked.map((u) => u.name).join(', ')}`, ` · suit unlocked: ${r.unlocked.map((u) => u.name).join(', ')}`) : ''}</p>` : ''}
+      ${r.fresh.length ? `<div class="rw-medals">${r.fresh.map((m) => `<span class="rw-medal"><i>${m.icon}</i><b>${m.name}</b><small>${m.desc}</small></span>`).join('')}</div>` : ''}</div>`;
   }
   function quizHtml() {
     S.quiz = pickQuiz(M.world, M.id.length * 7 + (store.get('liastra.plays', 0))); S.quizAns = S.quiz.map(() => null);
@@ -952,7 +1017,12 @@
     box.querySelectorAll('button').forEach((b, k) => { b.disabled = true; if (k === q.a) b.classList.add('right'); else if (k === j) b.classList.add('wrong'); });
     const why = box.querySelector('.qz-why'); why.hidden = false; why.innerHTML = `<b>${j === q.a ? L('Certo!', 'Correct!') : L('Quase.', 'Not quite.')}</b> ${q.why}`;
     beep(j === q.a ? 'ok' : 'bad');
-    if (S.quizAns.every((x) => x !== null)) { const sc = ui.card.querySelector('.qz-score'); sc.hidden = false; sc.innerHTML = L(`Você acertou <b>${quizScore()} de ${S.quiz.length}</b>.`, `You got <b>${quizScore()} of ${S.quiz.length}</b> right.`); }
+    if (S.quizAns.every((x) => x !== null)) {
+      const n = quizScore(), sc = ui.card.querySelector('.qz-score'); sc.hidden = false;
+      const r = Rewards.award(n * 20, n === S.quiz.length ? ['quiz'] : []);
+      sc.innerHTML = L(`Você acertou <b>${n} de ${S.quiz.length}</b>: +${n * 20} XP.`, `You got <b>${n} of ${S.quiz.length}</b> right: +${n * 20} XP.`) + (r.fresh.length ? ` <span class="rw-medal inline"><i>${r.fresh[0].icon}</i><b>${r.fresh[0].name}</b></span>` : '') + (r.rankUp ? ` <b>${L('Nova patente:', 'New rank:')} ${r.after.name}</b>` : '');
+      if (n) { S.reward.gain += n * 20; S.reward.parts.push([L('Quiz', 'Quiz'), n * 20]); S.reward.after = r.after; S.reward.fresh = S.reward.fresh.concat(r.fresh); const box = ui.card.querySelector('.rewards-box'); if (box) box.innerHTML = rewardHtml(S.reward); }
+    }
   }
   const quizScore = () => S.quiz ? S.quiz.reduce((n, q, i) => n + (S.quizAns[i] === q.a ? 1 : 0), 0) : 0;
   function lessons() {
@@ -1002,6 +1072,7 @@
     const fp = e.target.closest('[data-farm-plant]'); if (fp) { farmPlant(+fp.dataset.tray, fp.dataset.farmPlant); return; }
     const fh = e.target.closest('[data-farm-harvest]'); if (fh) { farmHarvest(+fh.dataset.farmHarvest); return; }
     const fb = e.target.closest('[data-farm-boost]'); if (fb) { const i = +fb.dataset.farmBoost; if (S.battery < 0.5) { toast(L('Bateria baixa para os nutrientes.', 'Battery too low for nutrients.'), 'alert'); return; } applyFx({ e: -0.5 }); S.farm[i].t = Math.min(1, S.farm[i].t + 0.15); beep('ok'); farmVisuals(true); farmPanel(i); return; }
+    const sw = e.target.closest('[data-suit]'); if (sw && !sw.disabled) { Rewards.setSuit(sw.dataset.suit); beep('tap'); missionCenter(); return; }
     const qz = e.target.closest('[data-quiz]'); if (qz) { const [i, j] = qz.dataset.quiz.split(':').map(Number); answerQuiz(i, j); return; }
     const a11 = e.target.closest('[data-a11y]'); if (a11) { const k = a11.dataset.a11y; A11Y[k] = !A11Y[k]; store.set('liastra.a11y', A11Y); applyA11y(); pauseMenu(); return; }
     const fl = e.target.closest('[data-farm-led]'); if (fl) { const d = +fl.dataset.farmLed; S.alloc.food = clamp(S.alloc.food + d, 0, MAX.food); beep('tap'); farmVisuals(true); farmPanel(+(ui.card.querySelector('.tray.on') || { dataset: { farmSel: 0 } }).dataset.farmSel); return; }
@@ -1022,6 +1093,8 @@
     if (a === 'next-sol') { nextSol(); return; }
     if (a === 'sleep') { closeModal(); S.sleeping = true; toast(L('Zzz… o tempo está passando rápido.', 'Zzz… time is passing quickly.'), 'info', 3000); return; }
     if (a === 'tablet') { if (S) tablet(); return; }
+    if (a === 'cam') { toggleCam(); if (!ui.modal.hidden && ui.card.querySelector('.a11y-row')) pauseMenu(); return; }
+    if (a === 'lang') { switchLang(); return; }
     if (a === 'pause') { pauseMenu(); return; }
     if (a === 'resume') { closeModal(); relock(); return; }
     if (a === 'sound') { soundOn = !soundOn; store.set('liastra.sound', soundOn); pauseMenu(); return; }
@@ -1035,6 +1108,7 @@
       <div class="end-actions"><button class="btn-primary" data-act="resume">${L('Continuar', 'Resume')}</button><button class="btn-ghost" data-act="tablet">${L('Tablet da missão', 'Mission tablet')}</button><button class="btn-ghost" data-act="tutorial">${L('Como jogar', 'How to play')}</button><button class="btn-ghost" data-act="sound">${soundOn ? L('Desligar som', 'Sound off') : L('Ligar som', 'Sound on')}</button><button class="btn-ghost" data-act="center">${L('Central de missões', 'Mission Center')}</button><button class="btn-ghost" data-act="close">${L('Sair do jogo', 'Quit the game')}</button></div>
       ${isTouch() ? '' : `<div class="sens-row"><label for="sens-in">${L('Sensibilidade do mouse', 'Mouse sensitivity')}</label><input id="sens-in" type="range" min="0.5" max="5" step="0.1" value="${eng.sensMul}"><b id="sens-val">${eng.sensMul.toFixed(1)}×</b></div>
       <p class="note">${L('Aperte <kbd>Esc</kbd> para pausar e para continuar.', 'Press <kbd>Esc</kbd> to pause and to resume.')}</p>`}
+      <div class="a11y-row"><span>${L('Câmera', 'Camera')}</span><button type="button" class="a11y-t${eng.thirdPerson ? '' : ' on'}" data-act="cam">${L('1ª pessoa', '1st person')}</button><button type="button" class="a11y-t${eng.thirdPerson ? ' on' : ''}" data-act="cam">${L('3ª pessoa', '3rd person')}</button><span style="margin-left:10px">${L('Idioma', 'Language')}</span><button type="button" class="a11y-t${LANG === 'en' ? '' : ' on'}" data-act="${LANG === 'en' ? 'lang' : 'noop'}">Português</button><button type="button" class="a11y-t${LANG === 'en' ? ' on' : ''}" data-act="${LANG === 'en' ? 'noop' : 'lang'}">English</button></div>
       <div class="a11y-row"><span>${L('Acessibilidade', 'Accessibility')}</span>${[['big', L('Texto maior', 'Larger text')], ['contrast', L('Alto contraste', 'High contrast')], ['calm', L('Menos movimento e brilho', 'Less motion and glow')]].map(([k, l]) => `<button type="button" class="a11y-t${A11Y[k] ? ' on' : ''}" data-a11y="${k}" aria-pressed="${!!A11Y[k]}">${l}</button>`).join('')}</div>`);
     ui.pausedAt = performance.now();
     const si = ui.card.querySelector('#sens-in');
@@ -1086,6 +1160,7 @@
           if (e.key === 'Escape') { if (document.getElementById('term-pop')) { hideTerm(); return; } if (S && !S.outcome && ui.modal.hidden && !S.sleeping) { e.preventDefault(); pauseMenu(); return; } if (S && !ui.modal.hidden && !S.outcome && !S.current && ui.card.querySelector('[data-act="close-modal"],[data-act="resume"]')) { if (ui.pausedAt && performance.now() - ui.pausedAt < 400) return; const wasPause = !!ui.card.querySelector('[data-act="resume"]'); closeModal(); if (wasPause) relock(); return; } }
           if (e.code === 'Tab' && S && !ui.modal.hidden && !S.current && !S.outcome) { e.preventDefault(); closeModal(); }
           if (e.code === 'KeyE' && S && !ui.modal.hidden && (ui.card.querySelector('.power') || ui.card.querySelector('.farm'))) closeModal();
+          if (e.code === 'KeyV' && S && ui.modal.hidden && !e.repeat) toggleCam();
         });
         bindTouchButtons();
       }
@@ -1097,7 +1172,7 @@
       if (ui.modal) ui.modal.hidden = true;
       root.hidden = true;
       document.documentElement.classList.remove('game-open');
-      if (location.hash === '#jogar' || location.hash === '#play') history.replaceState(null, '', location.pathname + location.search);
+      if (/^#(jogar|play)/.test(location.hash)) history.replaceState(null, '', location.pathname + location.search);
     },
     _debug: () => ({ S, M, eng, world, use, stepCheck, farmPlant, farmHarvest })
   };

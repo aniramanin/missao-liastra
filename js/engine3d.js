@@ -36,6 +36,7 @@
     return g;
   }
 
+  const KEEP = new Set();
   /* ---------- imagens (logos e patches) viram texturas ---------- */
   const imgCache = {};
   function imageTex(src, opts = {}) {
@@ -350,10 +351,18 @@
   Engine.prototype.dispose = function () {
     if (!this.scene) return;
     const keepM = new Set(Object.values(MAT)), keepT = new Set(Object.values(TEX)), keepI = new Set(Object.values(imgCache));
+    const keepTex = (t) => keepT.has(t) || keepI.has(t) || KEEP.has(t);
+    const seen = new Set();
     this.scene.traverse((o) => {
-      if (o.geometry) o.geometry.dispose();
-      if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => { if (!keepM.has(m)) { if (m.map && !keepT.has(m.map) && !keepI.has(m.map)) m.map.dispose(); m.dispose(); } });
+      if (o.geometry && !KEEP.has(o.geometry) && !seen.has(o.geometry)) { seen.add(o.geometry); o.geometry.dispose(); }
+      if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => {
+        if (keepM.has(m) || KEEP.has(m) || seen.has(m)) return; seen.add(m);
+        ['map', 'emissiveMap', 'alphaMap', 'normalMap', 'roughnessMap', 'bumpMap'].forEach((k) => { const t = m[k]; if (t && !keepTex(t) && !seen.has(t)) { seen.add(t); t.dispose(); } });
+        if (m.uniforms) Object.values(m.uniforms).forEach((u) => { const t = u && u.value; if (t && t.isTexture && !keepTex(t) && !seen.has(t)) { seen.add(t); t.dispose(); } });
+        m.dispose();
+      });
     });
+    if (this.renderer) this.renderer.renderLists.dispose();
     if (this.scene.environment) this.scene.environment.dispose();
     this.scene = null;
   };
@@ -518,19 +527,65 @@
       cam.lookAt(target); return;
     }
     const eye = this.mode === 'float' ? 0 : (this.eyeH || 1.62);
-    const bob = this.mode === 'walk' && !this.calm ? Math.sin(this.bob || 0) * 0.03 : 0;
-    cam.position.set(P.pos.x, P.pos.y + eye + bob, P.pos.z);
-    cam.rotation.set(this.pitch, this.yaw, this.mode === 'float' ? Math.sin(performance.now() / 2400) * 0.03 : 0, 'YXZ');
+    const third = !!this.thirdPerson;
+    const bob = this.mode === 'walk' && !this.calm && !third ? Math.sin(this.bob || 0) * 0.03 : 0;
+    this.updateAvatar();
+    if (!third) {
+      cam.position.set(P.pos.x, P.pos.y + eye + bob, P.pos.z);
+      cam.rotation.set(this.pitch, this.yaw, this.mode === 'float' ? Math.sin(performance.now() / 2400) * 0.03 : 0, 'YXZ');
+      return;
+    }
+    // 3ª pessoa: câmera atrás e um pouco acima da cabeça; aproxima ao encostar em paredes
+    const head = new T.Vector3(P.pos.x, P.pos.y + (this.mode === 'float' ? 0.1 : eye - 0.05), P.pos.z);
+    const pitch = this.mode === 'float' ? this.pitch : clamp(this.pitch, -1.1, 0.9);
+    const fwd = new T.Vector3(0, 0, -1).applyEuler(new T.Euler(pitch, this.yaw, 0, 'YXZ'));
+    const right = new T.Vector3(1, 0, 0).applyEuler(new T.Euler(0, this.yaw, 0, 'YXZ'));
+    const want = this.mode === 'float' ? 1.9 : (this.indoor ? 2.4 : 3.4);
+    const pivot = head.clone().addScaledVector(right, this.mode === 'float' ? 0.25 : 0.35).add(new T.Vector3(0, 0.25, 0));
+    let free = 0.35; const tp = new T.Vector3();
+    for (let d = 0.35; d <= want + 0.001; d += 0.1) { tp.copy(pivot).addScaledVector(fwd, -d); if (this.camBlocked(tp)) break; free = d; }
+    const dist = Math.max(0.35, free - 0.12);
+    this._camDist = this._camDist === undefined || dist < this._camDist ? dist : this._camDist + (dist - this._camDist) * 0.12;
+    if (this._camDist < 0.95) {
+      // espaço apertado: vira 1ª pessoa automaticamente para o avatar não tampar a visão
+      if (this.avatar) this.avatar.visible = false;
+      cam.position.copy(head); cam.rotation.set(this.pitch, this.yaw, 0, 'YXZ'); return;
+    }
+    cam.position.copy(pivot).addScaledVector(fwd, -this._camDist);
+    cam.position.y += clamp((1.8 - this._camDist) * 0.3, 0, 0.25);
+    cam.rotation.set(pitch, this.yaw, 0, 'YXZ');
   };
 
   Engine.prototype.addInteract = function (it) { if (window.tr) it.label = tr(it.label); it.pos = it.pos.isVector3 ? it.pos : new T.Vector3(it.pos[0], it.pos[1], it.pos[2]); it.r = it.r || 2.2; this.interactables.push(it); return it; };
+  // avatar do jogador (visível só em 3ª pessoa)
+  Engine.prototype.updateAvatar = function () {
+    const A = this.avatar; if (!A) return;
+    const P = this.player, show = !!this.thirdPerson && this.mode !== 'drive';
+    A.visible = show; if (!show) return;
+    const flo = this.mode === 'float';
+    A.position.set(P.pos.x, P.pos.y - (flo ? 1.05 : 0), P.pos.z);
+    A.rotation.set(0, this.yaw, 0);
+    const c = A.userData.crew; if (!c) return;
+    const moving = flo ? P.vel.length() > 0.15 : (this.input().f || this.input().s);
+    const sw = moving && !flo ? Math.sin(this.bob || 0) * 0.55 : 0, t = performance.now() / 1000;
+    c.legs.forEach((l, i) => { l.rotation.x = flo ? 0.25 + Math.sin(t * 0.9 + i) * 0.12 : (i ? -sw : sw); });
+    c.arms.forEach((a, i) => { a.rotation.x = flo ? -0.2 + Math.sin(t * 0.8 + i * 2) * 0.15 : (i ? sw : -sw) * 0.8; a.rotation.z = (i ? 1 : -1) * (flo ? 0.22 : 0.08); });
+    c.body.rotation.x = flo ? -0.25 : 0;
+  };
+  Engine.prototype.camBlocked = function (p) {
+    if (this.mode === 'float') return !this.floatAllowed(p);
+    for (const w of this.walls) if (p.x > w.minX - 0.12 && p.x < w.maxX + 0.12 && p.z > w.minZ - 0.12 && p.z < w.maxZ + 0.12) return true;
+    if (this.camLimit && this.camLimit(p)) return true;
+    return p.y < this.groundAt(p.x, p.z) + 0.2;
+  };
   Engine.prototype.updateFocus = function () {
     if (this.mode === 'drive') { this.focus = this.interactables.find((i) => i.kind === 'rover') || null; return; }
     const cam = this.camera, fwd = new T.Vector3(0, 0, -1).applyQuaternion(cam.quaternion);
+    const origin = this.thirdPerson ? new T.Vector3(this.player.pos.x, this.player.pos.y + (this.mode === 'float' ? 0 : (this.eyeH || 1.62)), this.player.pos.z) : cam.position;
     let best = null, bestScore = -1;
     for (const it of this.interactables) {
       if (it.enabled && !it.enabled()) continue;
-      const d = it.pos.clone().sub(cam.position), dist = d.length();
+      const d = it.pos.clone().sub(origin), dist = d.length();
       if (dist > it.r) continue;
       d.normalize();
       const dot = this.mode === 'float' ? d.dot(fwd) : (new T.Vector2(d.x, d.z).normalize().dot(new T.Vector2(fwd.x, fwd.z).normalize()));
@@ -995,7 +1050,17 @@
     const m = new T.Mesh(geo, new T.MeshStandardMaterial({ color, roughness: 1, flatShading: true })); m.scale.set(w / 2, h, d / 2); m.position.set(x, 0, z); shadowed(m); p.add(m); return m;
   };
 
+  // terreno guardado em memória: Marte e Lua são calculados uma vez por sessão
+  const TERRAIN_CACHE = {};
   B.terrain = (p, opt) => {
+    const ckey = JSON.stringify([opt.seed, opt.amp, opt.flatR, opt.flats, opt.craters, opt.c1, opt.c2, opt.c3, opt.rock, opt.rocks, opt.size, opt.seg]);
+    const hit = TERRAIN_CACHE[ckey];
+    if (hit) {
+      const mesh = new T.Mesh(hit.geo, hit.mat); mesh.receiveShadow = true; p.add(mesh);
+      const rocks = new T.InstancedMesh(hit.rockGeo, hit.rockMat, hit.n); rocks.instanceMatrix.array.set(hit.matrices); rocks.instanceMatrix.needsUpdate = true;
+      rocks.count = hit.count; rocks.castShadow = true; rocks.receiveShadow = true; p.add(rocks);
+      return { mesh, height: hit.height };
+    }
     const size = opt.size || 600, seg = opt.seg || 200, seed = opt.seed || 3, craters = opt.craters || [];
     const flats = (opt.flats || []).map((f) => Object.assign({}, f));
     const height = (x, z) => {
@@ -1022,9 +1087,9 @@
       col[i * 3] = tmp.r; col[i * 3 + 1] = tmp.g; col[i * 3 + 2] = tmp.b;
     }
     geo.setAttribute('color', new T.BufferAttribute(col, 3)); geo.computeVertexNormals();
-    const detail = canvasTex(512, 512, (g, w, h) => {
+    const detail = canvasTex(256, 256, (g, w, h) => {
       const img = g.createImageData(w, h);
-      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const v = 170 + fbm(x / 18, y / 18, 4, 4) * 60 + Math.random() * 25; const i = (y * w + x) * 4; img.data[i] = v; img.data[i + 1] = v; img.data[i + 2] = v; img.data[i + 3] = 255; }
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const v = 170 + fbm(x / 9, y / 9, 4, 4) * 60 + Math.random() * 25; const i = (y * w + x) * 4; img.data[i] = v; img.data[i + 1] = v; img.data[i + 2] = v; img.data[i + 3] = 255; }
       g.putImageData(img, 0, 0);
       const R = rand(seed); for (let i = 0; i < 60; i++) { const x = R() * w, y = R() * h, r = 2 + R() * 10; g.strokeStyle = 'rgba(60,60,60,.25)'; g.lineWidth = 2; g.beginPath(); g.arc(x, y, r, 0, 7); g.stroke(); g.fillStyle = 'rgba(0,0,0,.08)'; g.fill(); }
     }, [70, 70]);
@@ -1044,6 +1109,8 @@
       m4.compose(pp, q, sc); rocks.setMatrixAt(k++, m4);
     }
     rocks.count = k; rocks.castShadow = true; rocks.receiveShadow = true; p.add(rocks);
+    TERRAIN_CACHE[ckey] = { geo, mat: mesh.material, rockGeo, rockMat: rocks.material, n: N, count: k, matrices: rocks.instanceMatrix.array.slice(), height };
+    [geo, rockGeo, mesh.material, rocks.material, detail].forEach((r) => KEEP.add(r));
     return { mesh, height };
   };
 
@@ -1150,9 +1217,10 @@
     const sit = o.pose === 'sit', flo = o.pose === 'float';
     const hip = sit ? 0.5 : 0.92;
     // pernas
+    const legs = [];
     [-0.1, 0.1].forEach((sx) => {
       if (sit) { const th = B.cyl(body, 0.075, 0.07, 0.45, suit, sx, hip, -0.18, 8); th.rotation.x = Math.PI / 2; const sh = B.cyl(body, 0.065, 0.06, 0.45, suit, sx, 0.25, -0.4, 8); B.box(body, 0.11, 0.07, 0.24, MAT.darker, sx, 0.04, -0.46); }
-      else { const lg = B.cyl(body, 0.075, 0.06, 0.86, suit, sx, hip / 2 + 0.02, 0, 8); if (flo) lg.rotation.x = 0.4 * (sx > 0 ? 1 : 0.6); B.box(body, 0.11, 0.07, 0.24, MAT.darker, sx, 0.04, -0.04); }
+      else { const lp = new T.Group(); lp.position.set(sx, hip, 0); body.add(lp); const lg = B.cyl(lp, 0.075, 0.06, 0.86, suit, 0, -hip / 2 + 0.02, 0, 8); if (flo) lp.rotation.x = 0.4 * (sx > 0 ? 1 : 0.6); B.box(lp, 0.11, 0.07, 0.24, MAT.darker, 0, 0.04 - hip, -0.04); legs.push(lp); }
     });
     const torso = B.cyl(body, 0.17, 0.15, 0.58, suit, 0, hip + 0.3, 0, 12);
     B.sph(body, 0.17, suit, 0, hip + 0.58, 0, 12).scale.set(1.15, 0.5, 0.9);
@@ -1167,12 +1235,12 @@
       const fore = new T.Group(); fore.position.y = -0.32; sh.add(fore);
       B.cyl(fore, 0.05, 0.045, 0.3, suit, 0, -0.15, 0, 8); B.sph(fore, 0.05, skin, 0, -0.32, 0, 8);
       const work = o.pose === 'work' || sit;
-      sh.rotation.x = work ? -0.9 : 0.05; fore.rotation.x = work ? -0.6 : 0; sh.rotation.z = s * (flo ? 0.5 : 0.08);
+      sh.rotation.x = work ? -0.9 : 0.05; fore.rotation.x = work ? -0.6 : 0; sh.rotation.z = s * (flo ? 0.25 : 0.08);
       arms.push(sh);
     });
     // patch no ombro e crachá
     if (o.patch) { const pt = new T.Mesh(new T.CircleGeometry(0.055, 16), new T.MeshBasicMaterial({ map: o.patch, transparent: true })); pt.position.set(-0.19, hip + 0.48, -0.05); pt.rotation.y = -Math.PI / 2 - 0.3; body.add(pt); const pt2 = pt.clone(); pt2.position.set(0.07, hip + 0.42, -0.165); pt2.rotation.y = Math.PI; body.add(pt2); }
-    g.userData.crew = { body, head, arms, phase: Math.random() * 6, float: flo };
+    g.userData.crew = { body, head, arms, legs, suit, phase: Math.random() * 6, float: flo };
     return g;
   };
   B.animateCrew = (list, t) => list.forEach((g) => { const c = g.userData.crew; if (!c) return; const b = Math.sin(t * 1.4 + c.phase); c.body.scale.y = 1 + b * 0.006; c.head.rotation.y = Math.sin(t * 0.35 + c.phase) * 0.5; if (c.float) { c.body.position.y = Math.sin(t * 0.6 + c.phase) * 0.08; c.body.rotation.z = Math.sin(t * 0.25 + c.phase) * 0.15; } });
