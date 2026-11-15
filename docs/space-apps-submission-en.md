@@ -74,4 +74,4 @@ We chose immersion over menus: players walk to the machine they want to use, so 
 We used Claude (Anthropic) as a coding and design assistant: to write and debug the JavaScript, the 3D scenes and the website, to draft and translate texts, to design the mission patches as code-generated SVG, to build the presentation slides and to assemble the 30-second video from real captures of the game, with a soundtrack synthesized by code. The team defined the concept, the missions, the scientific content and the visual identity, and reviewed every fact and source. All screenshots and video frames are real captures of the running game; the team photos are real photos of the team. No AI-generated images of real NASA missions are presented as real.
 
 ## Team
-Marina Freitas and Luiza Oliveira (founders, Aerospace Innovation Center), with Raylla and Esther. Aerospace Innovation Center is part of the LIASTRA Institute.
+Marina Freitas and Luiza Oliveira (founders, Aerospace Innovation Center), with Raylla Vardiero, Esther Anjo and Barbara Dorneles. Aerospace Innovation Center is part of the LIASTRA Institute.

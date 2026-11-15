@@ -946,3 +946,25 @@ div.crop { cursor: default; } div.crop.got { border-color: rgba(255, 209, 102, .
   .hud-obj { top: calc(64px + env(safe-area-inset-top, 0px)) !important; bottom: auto !important; height: auto; max-height: calc(100% - 330px); overflow: hidden; width: 250px; }
   .hud-obj .obj:nth-of-type(n+4) { display: none; }
 }
+
+/* ---------- identidade visual do Aerospace Innovation Center: destaques em azul ---------- */
+:root { --aic: #1f5fd6; --aic-l: #7db7ff; --aic-deep: #102868; }
+.grad { background: linear-gradient(92deg, #a9d4ff 0%, #5a9cff 45%, #2f6bff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.eyebrow-c { color: var(--aic); }
+.eyebrow-c.dark { color: var(--aic-l); }
+.to-k { color: var(--aic); }
+.t-k, .t-air .t-k, .t-food .t-k, .t-delay .t-k, .t-cards .t-k { color: var(--aic) !important; }
+.t-energy .t-k, .t-rad .t-k { color: var(--aic-l) !important; }
+.t-rad { background: radial-gradient(600px 300px at 90% 0%, rgba(47, 107, 255, .38), transparent 60%), #050b1c; }
+.t-air { background: linear-gradient(160deg, #e3efff, #fff 70%); }
+.t-food { background: linear-gradient(160deg, #e6f0ff, #fff 70%); }
+.cell-row i { background: linear-gradient(180deg, #a9d4ff, #2f6bff); box-shadow: 0 0 20px rgba(47, 107, 255, .3); }
+.mini-fc .warn { color: var(--aic-l); }
+.mini-fact b { color: var(--aic-l); }
+.discuss li::before { color: var(--aic); }
+.pc-code { color: var(--aic-l); }
+.team-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; }
+@media (max-width: 1000px) { .team-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 900px) { .team-grid { grid-template-columns: repeat(2, 1fr); } .team-grid .member:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; width: calc(50% - 7px); } }
+.to-cells i.g { background: linear-gradient(180deg, #bfe0ff, #5a9cff); }
+.to-cells i.s { background: linear-gradient(180deg, #2f6bff, #102868); }

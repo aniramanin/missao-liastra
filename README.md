@@ -13,7 +13,7 @@ Um simulador **3D em primeira pessoa** (Three.js, com bloom e reflexos de ambien
 
 **Projeto:** Aerospace Innovation Center (AIC), do LIASTRA Institute. Logo e emblema em `assets/aic-*.png`.
 
-**Equipe:** Marina Freitas e Luiza Oliveira, fundadoras do Aerospace Innovation Center, com Raylla e Esther no time do NASA Space Apps Challenge 2026.
+**Equipe:** Marina Freitas e Luiza Oliveira, fundadoras do Aerospace Innovation Center, com Raylla Vardiero, Esther Anjo e Barbara Dorneles no time do NASA Space Apps Challenge 2026.
 
 **Quem faz:** LIASTRA Institute. As bases pertencem ao **Aerospace Innovation Center (AIC)**, do LIASTRA. Os laboratórios são do **ICBS** (International Center for Biomedical & Space Sciences), o centro de pesquisa do LIASTRA. As três logos aparecem no site e dentro do jogo (placa da base, casco, Comando, Laboratório ICBS, módulos da estação).
 
