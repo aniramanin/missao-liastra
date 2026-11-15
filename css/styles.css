@@ -842,3 +842,52 @@ div.crop { cursor: default; } div.crop.got { border-color: rgba(255, 209, 102, .
 .member span { font-size: 14px; color: var(--gray); }
 .member.founder span { color: var(--blue); font-weight: 600; }
 @media (max-width: 900px) { .team-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } .member figcaption { padding: 14px 14px 18px; } .member strong { font-size: 17px; } .member span { font-size: 13px; } }
+
+/* ---------- previsão de esgotamento (painel de energia) ---------- */
+.runout { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 16px; }
+.runout span { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.06); color: #d7dbe6; }
+.runout span svg { width: 15px; height: 15px; }
+.runout .ok { color: #7ee2a8; }
+.runout .warn { color: #ffd166; background: rgba(255,209,102,.1); }
+.runout .bad { color: #ff8a80; background: rgba(255,90,80,.14); font-weight: 600; }
+
+/* ---------- Sol ao vivo ---------- */
+.sun-live { display: grid; grid-template-columns: 112px 1fr; gap: 14px; align-items: center; margin: 14px 0; padding: 12px; border-radius: 16px; background: rgba(255,255,255,.04); }
+.sun-live img { width: 112px; height: 112px; border-radius: 50%; object-fit: cover; background: #000; box-shadow: 0 0 30px rgba(255,170,60,.25); }
+.sun-live figcaption { font-size: 13.5px; color: #c9cede; line-height: 1.45; }
+.sun-live figcaption b { display: block; color: #fff; font-size: 15px; margin-bottom: 2px; }
+
+/* ---------- números reais ---------- */
+.real-nums ul { margin: 6px 0 8px; padding-left: 18px; }
+.real-nums li { margin: 4px 0; }
+
+/* ---------- quiz de fim de missão ---------- */
+.quiz { margin-top: 22px; padding: 18px; border-radius: 18px; background: rgba(41,151,255,.08); border: 1px solid rgba(41,151,255,.25); }
+.quiz h3 { margin: 0 0 4px; }
+.qz { margin-top: 14px; }
+.qz-q { margin: 0 0 8px; font-weight: 600; }
+.qz-o { display: grid; gap: 8px; }
+.qz-o button { text-align: left; font: inherit; font-size: 14.5px; color: inherit; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 10px 14px; cursor: pointer; }
+.qz-o button:hover:not(:disabled) { background: rgba(255,255,255,.12); }
+.qz-o button.right { background: rgba(70,212,131,.22); border-color: #46d483; }
+.qz-o button.wrong { background: rgba(255,90,80,.2); border-color: #ff5a50; }
+.qz-o button:disabled { cursor: default; }
+.qz-why { margin: 8px 0 0; font-size: 14px; color: #c9cede; }
+.qz-score { margin: 14px 0 0; font-size: 16px; }
+
+/* ---------- acessibilidade ---------- */
+.a11y-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
+.a11y-row > span { font-size: 14px; color: #c9cede; margin-right: 4px; }
+.a11y-t { font: inherit; font-size: 13.5px; color: inherit; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+.a11y-t.on { background: #2997ff; border-color: #2997ff; color: #fff; }
+.game.a11y-big { font-size: 118%; }
+.game.a11y-big .hud3d, .game.a11y-big .modal-card, .game.a11y-big .toast, .game.a11y-big .prompt { zoom: 1.18; }
+.game.a11y-contrast .hud3d > *, .game.a11y-contrast .modal-card, .game.a11y-contrast .toast { background: #000 !important; color: #fff !important; border: 2px solid #fff !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+.game.a11y-contrast .note, .game.a11y-contrast small, .game.a11y-contrast .qz-why { color: #fff !important; }
+.game.a11y-calm *, .game.a11y-calm *::before, .game.a11y-calm *::after { animation-duration: .001s !important; transition-duration: .001s !important; }
+
+.sun-site { margin-top: 20px; display: grid; grid-template-columns: 160px 1fr; gap: 24px; align-items: center; background: #0d0f14; border: 1px solid rgba(255,255,255,.08); border-radius: var(--r-lg); padding: clamp(18px, 3vw, 28px); }
+.sun-site img { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 60px rgba(255,160,50,.3); }
+.sun-site h3 { margin: 0 0 6px; color: #f5f5f7; font-size: 21px; }
+.sun-site p { margin: 0; color: #a1a1a6; font-size: 15px; }
+@media (max-width: 640px) { .sun-site { grid-template-columns: 1fr; justify-items: center; text-align: center; } .sun-site img { width: 130px; height: 130px; } }

@@ -30,6 +30,16 @@ Quatro tripulantes trabalham na base (dois na estação). Fale com eles para rec
 ### Idiomas
 Português (`index.html`) e inglês (`en.html`). As traduções do jogo ficam em `js/lang-en.js`; `js/i18n.js` escolhe o idioma pelo `lang` da página.
 
+### Para professores e aprendizagem
+- **Guia do professor** em [português](teacher.html) e [inglês](teacher-en.html): objetivos, aula de 45 min, missões recomendadas, perguntas, rubrica e atividade sem computador.
+- **Quiz de 3 perguntas** no fim de cada missão (2 sobre o mundo e 1 geral), com explicação e placar no resumo da turma.
+- **Previsão de esgotamento** no painel de energia: quantos sóis faltam para o ar, a comida ou a bateria acabarem.
+- **O Sol ao vivo** (NASA SDO, AIA 193 Å) no rádio do jogo e na seção de dados do site.
+- **Números reais de suporte de vida** da NASA no tablet (BVAD), com fonte.
+- **Acessibilidade** no menu de pausa: texto maior, alto contraste e menos movimento e brilho.
+
+Análise dos outros projetos do desafio: [docs/analise-concorrentes.md](docs/analise-concorrentes.md). Texto da submissão em inglês: [docs/space-apps-submission-en.md](docs/space-apps-submission-en.md).
+
 ### Missões (cada uma com patch próprio)
 | Patch | Mundo | Baseada em |
 |---|---|---|
@@ -101,6 +111,9 @@ en.html               landing page em inglês
 js/i18n.js            escolha de idioma (L, tr)
 js/lang-en.js         traduções do jogo para inglês
 js/farm.js            culturas da agricultura espacial
+js/learn.js           quiz de fim de missão e imagem do Sol ao vivo
+teacher.html          guia do professor (PT) · teacher-en.html (EN)
+tools/gen_teacher.py  gera as páginas do guia do professor
 css/styles.css        estilos do site e do jogo
 js/donki-archive.js   arquivo real do DONKI (fallback)
 js/data.js            locais, glossário, fatos e fontes

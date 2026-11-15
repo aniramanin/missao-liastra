@@ -629,6 +629,9 @@
       <p class="note">${p.bal >= 0 ? L(`Sobram cerca de ${p.bal} células por ${solWord()}: elas enchem a bateria. O que passar de ${S.cap} é desperdiçado.`, `About ${p.bal} spare cells per ${solWord()}: they fill the battery. Anything above ${S.cap} is wasted.`) : L(`O plano gasta ${-p.bal} células a mais do que entra. A diferença sai da bateria.`, `The plan uses ${-p.bal} more cells than come in. The difference comes out of the battery.`)}</p>
       <div class="systems">${SYSTEMS.map((sys) => `<div class="sys" style="--c:${sys.color}"><div class="sys-head"><span class="sys-ic">${I[sys.icon]}</span><div><strong>${sys.name}</strong><small>${sys.help}</small></div></div><div class="stepper"><button type="button" data-dec="${sys.id}" aria-label="−" ${S.alloc[sys.id] <= 0 ? 'disabled' : ''}>−</button><span class="pips">${Array.from({ length: MAX[sys.id] }, (_, k) => `<i class="${k < S.alloc[sys.id] ? 'on' : ''}"></i>`).join('')}</span><button type="button" data-inc="${sys.id}" aria-label="+" ${S.alloc[sys.id] >= MAX[sys.id] ? 'disabled' : ''}>+</button></div></div>`).join('')}</div>
       <div class="preview"><span class="pv-t">${L(`Por ${solWord()}, com este plano:`, `Per ${solWord()}, with this plan:`)}</span><span>${I.air} ${L('ar', 'air')} ${dl(p.life)}</span><span>${I.leaf} ${L('comida', 'food')} ${dl(p.food)} ${L('+ colheitas', '+ harvests')}</span><span>${I.flask} ${L('ciência', 'science')} ${dl(p.sci)}</span><span>${I.shield} ${L('escudo', 'shield')} ${Math.round(shieldPct() * 100)}%</span></div>
+      ${(() => { const left = (v, r) => r >= 0 ? null : Math.max(0, v / -r); const f = [[I.air, L('Ar e água', 'Air and water'), left(S.life, p.life)], [I.leaf, L('Comida', 'Food'), left(S.food, p.food)], [I.bolt, L('Bateria', 'Battery'), left(S.battery, p.bal)]];
+        const w = (x) => x < 1 ? L('em menos de 1', 'in under 1') : L(`em cerca de ${num(x)}`, `in about ${num(x)}`);
+        return `<div class="runout">${f.map(([ic, nm, x]) => `<span class="${x === null ? 'ok' : x < 1.5 ? 'bad' : 'warn'}">${ic} ${x === null ? L(`${nm}: estável`, `${nm}: stable`) : L(`${nm}: acaba ${w(x)} ${solWord()}${x >= 2 ? 's' : ''}`, `${nm}: runs out ${w(x)} ${solWord()}${x >= 2 ? 's' : ''}`)}</span>`).join('')}</div>`; })()}
       ${S.survival ? forecastHtml(S.sol) : ''}
       <button class="btn-primary" data-act="close-modal">${L('Aplicar plano', 'Apply plan')}</button></div>`;
   }
@@ -653,6 +656,7 @@
     return `<div class="power-head"><div><p class="eyebrow">${L('Rádio', 'Radio')}</p><h2>${L('Contato com a Terra', 'Contact with Earth')}</h2></div><button class="icon-btn" data-act="close-modal" aria-label="${L('Fechar', 'Close')}">${I.close}</button></div>
       ${extra}
       <div class="forecast"><div class="fc"><span class="fc-k">${I.antenna}<button type="button" class="term" data-term="atraso">${L('Atraso de comunicação', 'Communication delay')}</button></span><span class="fc-v">${delay}</span><small>${M.world === 'mars' ? L(`Calculado para a posição real de Marte hoje (${num(SpaceWeather.marsDistance().km / 1e6, 0)} milhões de km).`, `Calculated for Mars’s real position today (${num(SpaceWeather.marsDistance().km / 1e6, 0)} million km).`) : L('O rádio viaja a 300 mil km por segundo.', 'Radio travels at 300,000 km per second.')}</small></div></div>
+      <figure class="sun-live"><img src="${window.SUN_LIVE}" alt="${L('O Sol hoje, visto pelo satélite SDO da NASA', 'The Sun today, seen by NASA’s SDO satellite')}" onerror="this.closest('figure').remove()"><figcaption><b>${L('O Sol agora', 'The Sun right now')}</b>${L('Imagem real do satélite SDO da NASA (luz ultravioleta, 193 Å). Regiões brilhantes podem lançar explosões solares.', 'Real image from NASA’s SDO satellite (ultraviolet light, 193 Å). Bright regions can launch solar flares.')}</figcaption></figure>
       <h3>${L('Mensagem do Controle da Missão', 'Message from Mission Control')}</h3>
       <div class="radio-msg"><span class="radio-dot"></span><p>${M.world === 'mars' ? `<i>${L(`Recebida ${Math.round(S.delayMin)} min depois de enviada:`, `Received ${Math.round(S.delayMin)} min after it was sent:`)}</i> ` : ''}${msgs[M.id] || L('Seguimos acompanhando a telemetria. Bom trabalho, tripulação.', 'We keep watching the telemetry. Good work, crew.')}</p></div>
       <button class="btn-primary" data-act="close-modal">${L('Encerrar transmissão', 'End transmission')}</button>`;
@@ -669,7 +673,12 @@
     if (tab === 'estufa') { const coll = store.get('liastra.crops', []); body = `<p class="lead">${L('Culturas que já foram testadas no espaço ou em condições de Marte. Você colheu', 'Crops already tested in space or in Mars-like conditions. You have harvested')} <b>${coll.length} ${L('de', 'of')} ${Object.keys(CROPS).length}</b>.</p><div class="crop-grid">${Object.entries(CROPS).map(([k, c]) => `<div class="crop${coll.includes(k) ? ' got' : ''}"><span class="crop-dot" style="background:#${c.leaf.toString(16).padStart(6, '0')}"></span><strong>${c.name}</strong><small>${L('No espaço:', 'In space:')} ${c.real}</small><p>${c.fact}</p></div>`).join('')}</div>`; }
     if (tab === 'mapa') body = `<canvas class="bigmap" width="900" height="640"></canvas><p class="note">${L('Seta azul: você. Anel azul: próxima tarefa.', 'Blue arrow: you. Blue ring: next task.')}</p>`;
     if (tab === 'como') body = TUT.slice(1).map((s) => `<div class="tut-row"><h3>${s.t}</h3><p>${s.b}</p></div>`).join('');
-    if (tab === 'recursos') body = `<div class="res-explain">${[['bolt', L('Bateria', 'Battery'), '#ffd166', L('Energia guardada. O Sol (e o reator) enchem; o plano de energia esvazia. Se zerar, tudo funciona mais fraco.', 'Stored energy. The Sun (and the reactor) fill it; the energy plan drains it. If it hits zero, everything runs weaker.')], ['air', L('Ar e água', 'Air and water'), '#4cc3ff', L('Oxigênio e água da base. O suporte de vida, o gerador de O₂, o reciclador e as plantas ajudam. Banhos e vazamentos gastam.', 'The base’s oxygen and water. Life support, the O₂ generator, the recycler and plants help. Showers and leaks use it up.')], ['leaf', L('Comida', 'Food'), '#5bd48a', L('Estoque de comida. Colheitas da estufa enchem; refeições e exercícios gastam.', 'Food stock. Greenhouse harvests fill it; meals and exercise use it.')], ['rad', L('Radiação', 'Radiation'), '#ff9f43', L('Dose acumulada em mSv. Sobe mais rápido fora da base e em tempestades solares. Limite de treino: 50 mSv.', 'Accumulated dose in mSv. It rises faster outside the base and during solar storms. Training limit: 50 mSv.')], ['flask', L('Ciência', 'Science'), '#b392ff', L('Descobertas enviadas para a Terra: experimentos, amostras e fotos.', 'Discoveries sent to Earth: experiments, samples and photos.')], ['suit', L('Traje', 'Suit'), '#4cc3ff', L('Oxigênio do traje durante a EVA. Recarrega dentro da base.', 'Suit oxygen during an EVA. It recharges inside the base.')]].map(([ic, l, c, t]) => `<div class="re" style="--c:${c}"><span class="re-ic">${I[ic]}</span><div><strong>${l}</strong><p>${t}</p></div></div>`).join('')}</div>`;
+    if (tab === 'recursos') body = `<div class="res-explain">${[['bolt', L('Bateria', 'Battery'), '#ffd166', L('Energia guardada. O Sol (e o reator) enchem; o plano de energia esvazia. Se zerar, tudo funciona mais fraco.', 'Stored energy. The Sun (and the reactor) fill it; the energy plan drains it. If it hits zero, everything runs weaker.')], ['air', L('Ar e água', 'Air and water'), '#4cc3ff', L('Oxigênio e água da base. O suporte de vida, o gerador de O₂, o reciclador e as plantas ajudam. Banhos e vazamentos gastam.', 'The base’s oxygen and water. Life support, the O₂ generator, the recycler and plants help. Showers and leaks use it up.')], ['leaf', L('Comida', 'Food'), '#5bd48a', L('Estoque de comida. Colheitas da estufa enchem; refeições e exercícios gastam.', 'Food stock. Greenhouse harvests fill it; meals and exercise use it.')], ['rad', L('Radiação', 'Radiation'), '#ff9f43', L('Dose acumulada em mSv. Sobe mais rápido fora da base e em tempestades solares. Limite de treino: 50 mSv.', 'Accumulated dose in mSv. It rises faster outside the base and during solar storms. Training limit: 50 mSv.')], ['flask', L('Ciência', 'Science'), '#b392ff', L('Descobertas enviadas para a Terra: experimentos, amostras e fotos.', 'Discoveries sent to Earth: experiments, samples and photos.')], ['suit', L('Traje', 'Suit'), '#4cc3ff', L('Oxigênio do traje durante a EVA. Recarrega dentro da base.', 'Suit oxygen during an EVA. It recharges inside the base.')]].map(([ic, l, c, t]) => `<div class="re" style="--c:${c}"><span class="re-ic">${I[ic]}</span><div><strong>${l}</strong><p>${t}</p></div></div>`).join('')}</div>
+      <article class="fact real-nums"><span class="fact-k">${L('Números reais da NASA', 'Real NASA numbers')}</span><ul>
+        <li>${L('Cada astronauta usa cerca de <b>0,84 kg de oxigênio por dia</b> e solta cerca de <b>1 kg de gás carbônico</b>.', 'Each astronaut uses about <b>0.84 kg of oxygen a day</b> and breathes out about <b>1 kg of carbon dioxide</b>.')}</li>
+        <li>${L('Na Estação Espacial, cerca de <b>98% da água</b> é reciclada, inclusive suor e urina.', 'On the Space Station, about <b>98% of the water</b> is recycled, including sweat and urine.')}</li>
+        <li>${L('Em Marte, o experimento MOXIE fez oxigênio a partir do ar marciano: até <b>12 g por hora</b>.', 'On Mars, the MOXIE experiment made oxygen from Martian air: up to <b>12 g per hour</b>.')}</li>
+      </ul><a href="https://ntrs.nasa.gov/citations/20210024855" target="_blank" rel="noopener">${L('Fonte: NASA, Baseline Values and Assumptions Document', 'Source: NASA, Baseline Values and Assumptions Document')}</a></article>`;
     if (tab === 'glossario') body = `<dl class="gloss">${Object.entries(GLOSSARY).map(([k, v]) => `<div><dt>${GLOSS_NAMES[k] || k}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
     openModal(`<div class="tablet"><div class="tablet-head"><div class="tabs">${tabs.map(([k, l]) => `<button type="button" class="tab${k === tab ? ' on' : ''}" data-tab="${k}">${l}</button>`).join('')}</div><button class="icon-btn" data-act="close-modal" aria-label="${L('Fechar', 'Close')}">${I.close}</button></div><div class="tablet-body">${body}</div></div>`, 'wide');
     if (tab === 'mapa') drawMap(ui.card.querySelector('.bigmap'), true);
@@ -925,10 +934,27 @@
       <div class="end-grid"><div class="stat"><span>${Math.round(S.sci)}</span><small>${L('ciência', 'science')}</small></div><div class="stat"><span>${num(S.dose)}</span><small>${L('mSv de radiação', 'mSv of radiation')}</small></div><div class="stat"><span>${S.harvests}</span><small>${L('colheitas', 'harvests')}</small></div></div>
       ${chart()}
       <h3>${L('O que esta missão ensinou', 'What this mission taught')}</h3><ul class="lessons">${lessons().map((l) => `<li>${l}</li>`).join('')}</ul>
+      ${quizHtml()}
       <p class="note">${L('Patches na sua coleção:', 'Patches in your collection:')} <b>${earned} ${L('de', 'of')} ${MISSIONS.length}</b>.</p>
       <div class="end-actions"><button class="btn-primary" data-act="center">${L('Central de missões', 'Mission Center')}</button><button class="btn-ghost" data-act="again">${L('Jogar de novo', 'Play again')}</button><button class="btn-ghost" data-act="copy">${L('Copiar resumo para a turma', 'Copy a summary for class')}</button></div>
     </div>`, 'wide');
   }
+  function quizHtml() {
+    S.quiz = pickQuiz(M.world, M.id.length * 7 + (store.get('liastra.plays', 0))); S.quizAns = S.quiz.map(() => null);
+    store.set('liastra.plays', store.get('liastra.plays', 0) + 1);
+    return `<section class="quiz"><h3>${L('Desafio rápido: 3 perguntas', 'Quick challenge: 3 questions')}</h3><p class="note">${L('Responda para ver o quanto você aprendeu. O resultado entra no resumo para a turma.', 'Answer to see how much you learned. The result goes into the class summary.')}</p>
+      ${S.quiz.map((q, i) => `<div class="qz" data-qz="${i}"><p class="qz-q">${i + 1}. ${q.q}</p><div class="qz-o">${q.o.map((o, j) => `<button type="button" data-quiz="${i}:${j}">${o}</button>`).join('')}</div><p class="qz-why" hidden></p></div>`).join('')}
+      <p class="qz-score" hidden></p></section>`;
+  }
+  function answerQuiz(i, j) {
+    if (!S.quiz || S.quizAns[i] !== null) return;
+    const q = S.quiz[i], box = ui.card.querySelector(`[data-qz="${i}"]`); S.quizAns[i] = j;
+    box.querySelectorAll('button').forEach((b, k) => { b.disabled = true; if (k === q.a) b.classList.add('right'); else if (k === j) b.classList.add('wrong'); });
+    const why = box.querySelector('.qz-why'); why.hidden = false; why.innerHTML = `<b>${j === q.a ? L('Certo!', 'Correct!') : L('Quase.', 'Not quite.')}</b> ${q.why}`;
+    beep(j === q.a ? 'ok' : 'bad');
+    if (S.quizAns.every((x) => x !== null)) { const sc = ui.card.querySelector('.qz-score'); sc.hidden = false; sc.innerHTML = L(`Você acertou <b>${quizScore()} de ${S.quiz.length}</b>.`, `You got <b>${quizScore()} of ${S.quiz.length}</b> right.`); }
+  }
+  const quizScore = () => S.quiz ? S.quiz.reduce((n, q, i) => n + (S.quizAns[i] === q.a ? 1 : 0), 0) : 0;
   function lessons() {
     const Ls = [];
     if (!M.survival) Ls.push(`<b>${L('Base real:', 'Real basis:')}</b> ${M.basis}`);
@@ -947,7 +973,7 @@
     return `<figure class="chart"><svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="${L('Recursos ao longo da missão', 'Resources during the mission')}">${[0, 50, 100].map((v) => `<line x1="${pad}" x2="${W - pad}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${pad - 6}" y="${y(v) + 4}" text-anchor="end" class="axis">${v}</text>`).join('')}${line('life', '#4cc3ff')}${line('food', '#5bd48a')}${line('battery', '#ffd166')}</svg><figcaption><span style="--c:#4cc3ff">${L('Ar e água', 'Air & water')}</span><span style="--c:#5bd48a">${L('Comida', 'Food')}</span><span style="--c:#ffd166">${L('Bateria', 'Battery')}</span></figcaption></figure>`;
   }
   function copySummary(btn) {
-    const txt = [`${'Aerospace Innovation Center'} · ${M.code} · ${M.title} (${WORLD_NAME[M.world]})`, `${L('Resultado', 'Result')}: ${S.outcome.win ? L('missão cumprida', 'mission accomplished') : L('missão encerrada', 'mission ended')} · ${S.outcome.stars}/3 ${L('estrelas', 'stars')}`, `${L('Ciência', 'Science')}: ${Math.round(S.sci)} · ${L('Radiação', 'Radiation')}: ${num(S.dose)} mSv · EVA: ${Math.round(S.evaSecs)} s · ${L('Colheitas', 'Harvests')}: ${S.harvests}`, '', L('Tarefas concluídas:', 'Tasks completed:'), ...S.log.map((l) => `- ${l.t}`), '', L('Base real: ', 'Real basis: ') + M.basis].join('\n');
+    const txt = [`${'Aerospace Innovation Center'} · ${M.code} · ${M.title} (${WORLD_NAME[M.world]})`, `${L('Resultado', 'Result')}: ${S.outcome.win ? L('missão cumprida', 'mission accomplished') : L('missão encerrada', 'mission ended')} · ${S.outcome.stars}/3 ${L('estrelas', 'stars')}`, `${L('Ciência', 'Science')}: ${Math.round(S.sci)} · ${L('Radiação', 'Radiation')}: ${num(S.dose)} mSv · EVA: ${Math.round(S.evaSecs)} s · ${L('Colheitas', 'Harvests')}: ${S.harvests}`, S.quiz && S.quizAns.some((x) => x !== null) ? `${L('Desafio de perguntas', 'Quiz')}: ${quizScore()}/${S.quiz.length}` : '', '', L('Tarefas concluídas:', 'Tasks completed:'), ...S.log.map((l) => `- ${l.t}`), '', L('Base real: ', 'Real basis: ') + M.basis].join('\n');
     const done = () => { btn.textContent = L('Resumo copiado', 'Summary copied'); };
     try { navigator.clipboard.writeText(txt).then(done, fb); } catch (e) { fb(); }
     function fb() { const ta = document.createElement('textarea'); ta.value = txt; ta.style.position = 'absolute'; ta.style.left = '-9999px'; root.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove(); }
@@ -976,6 +1002,8 @@
     const fp = e.target.closest('[data-farm-plant]'); if (fp) { farmPlant(+fp.dataset.tray, fp.dataset.farmPlant); return; }
     const fh = e.target.closest('[data-farm-harvest]'); if (fh) { farmHarvest(+fh.dataset.farmHarvest); return; }
     const fb = e.target.closest('[data-farm-boost]'); if (fb) { const i = +fb.dataset.farmBoost; if (S.battery < 0.5) { toast(L('Bateria baixa para os nutrientes.', 'Battery too low for nutrients.'), 'alert'); return; } applyFx({ e: -0.5 }); S.farm[i].t = Math.min(1, S.farm[i].t + 0.15); beep('ok'); farmVisuals(true); farmPanel(i); return; }
+    const qz = e.target.closest('[data-quiz]'); if (qz) { const [i, j] = qz.dataset.quiz.split(':').map(Number); answerQuiz(i, j); return; }
+    const a11 = e.target.closest('[data-a11y]'); if (a11) { const k = a11.dataset.a11y; A11Y[k] = !A11Y[k]; store.set('liastra.a11y', A11Y); applyA11y(); pauseMenu(); return; }
     const fl = e.target.closest('[data-farm-led]'); if (fl) { const d = +fl.dataset.farmLed; S.alloc.food = clamp(S.alloc.food + d, 0, MAX.food); beep('tap'); farmVisuals(true); farmPanel(+(ui.card.querySelector('.tray.on') || { dataset: { farmSel: 0 } }).dataset.farmSel); return; }
     const inc = e.target.closest('[data-inc]'); if (inc) { const k = inc.dataset.inc; if (S.alloc[k] < MAX[k]) { S.alloc[k]++; beep('tap'); openModal(powerPanel(), 'wide'); } return; }
     const dec = e.target.closest('[data-dec]'); if (dec) { const k = dec.dataset.dec; if (S.alloc[k] > 0) { S.alloc[k]--; beep('tap'); openModal(powerPanel(), 'wide'); } return; }
@@ -1006,10 +1034,17 @@
     openModal(`<div class="power-head"><div><p class="eyebrow">${L('Pausa', 'Paused')} · ${M.code}</p><h2>${L('Missão em pausa', 'Mission paused')}</h2></div><button class="icon-btn" data-act="resume" aria-label="${L('Continuar', 'Resume')}">${I.close}</button></div>
       <div class="end-actions"><button class="btn-primary" data-act="resume">${L('Continuar', 'Resume')}</button><button class="btn-ghost" data-act="tablet">${L('Tablet da missão', 'Mission tablet')}</button><button class="btn-ghost" data-act="tutorial">${L('Como jogar', 'How to play')}</button><button class="btn-ghost" data-act="sound">${soundOn ? L('Desligar som', 'Sound off') : L('Ligar som', 'Sound on')}</button><button class="btn-ghost" data-act="center">${L('Central de missões', 'Mission Center')}</button><button class="btn-ghost" data-act="close">${L('Sair do jogo', 'Quit the game')}</button></div>
       ${isTouch() ? '' : `<div class="sens-row"><label for="sens-in">${L('Sensibilidade do mouse', 'Mouse sensitivity')}</label><input id="sens-in" type="range" min="0.5" max="5" step="0.1" value="${eng.sensMul}"><b id="sens-val">${eng.sensMul.toFixed(1)}×</b></div>
-      <p class="note">${L('Aperte <kbd>Esc</kbd> para pausar e para continuar.', 'Press <kbd>Esc</kbd> to pause and to resume.')}</p>`}`);
+      <p class="note">${L('Aperte <kbd>Esc</kbd> para pausar e para continuar.', 'Press <kbd>Esc</kbd> to pause and to resume.')}</p>`}
+      <div class="a11y-row"><span>${L('Acessibilidade', 'Accessibility')}</span>${[['big', L('Texto maior', 'Larger text')], ['contrast', L('Alto contraste', 'High contrast')], ['calm', L('Menos movimento e brilho', 'Less motion and glow')]].map(([k, l]) => `<button type="button" class="a11y-t${A11Y[k] ? ' on' : ''}" data-a11y="${k}" aria-pressed="${!!A11Y[k]}">${l}</button>`).join('')}</div>`);
     ui.pausedAt = performance.now();
     const si = ui.card.querySelector('#sens-in');
     if (si) si.addEventListener('input', () => { eng.sensMul = +si.value; store.set('liastra.sens', eng.sensMul); ui.card.querySelector('#sens-val').textContent = eng.sensMul.toFixed(1) + '×'; });
+  }
+  const A11Y = Object.assign({ big: false, contrast: false, calm: false }, store.get('liastra.a11y', {}));
+  function applyA11y() {
+    if (!root) return;
+    root.classList.toggle('a11y-big', !!A11Y.big); root.classList.toggle('a11y-contrast', !!A11Y.contrast); root.classList.toggle('a11y-calm', !!A11Y.calm);
+    if (eng) eng.calm = !!A11Y.calm;
   }
   function bindTouchButtons() {
     const set = (b, v) => { const k = b.dataset.tb; if (k === 'act') onInteract(v); if (k === 'up') eng.btnUp = v; if (k === 'down') eng.btnDown = v; };
@@ -1033,7 +1068,7 @@
       document.documentElement.classList.add('game-open');
       if (!root.dataset.built) {
         buildDOM(); root.dataset.built = '1';
-        try { eng = new Engine3D.Engine(ui.canvasBox); eng.sensMul = +store.get('liastra.sens', 2.2) || 2.2; }
+        try { eng = new Engine3D.Engine(ui.canvasBox); eng.sensMul = +store.get('liastra.sens', 2.2) || 2.2; applyA11y(); }
         catch (err) { ui.card.innerHTML = `<h2>${L('Não foi possível iniciar o 3D', 'Could not start 3D')}</h2><p class="lead">${L('Este navegador não ativou o WebGL. Tente outro navegador ou atualize o aparelho.', 'This browser did not enable WebGL. Try another browser or update your device.')}</p><button class="btn-primary" data-act="close">${L('Fechar', 'Close')}</button>`; ui.modal.hidden = false; document.addEventListener('click', onClick); return; }
         eng.onInteract = onInteract;
         eng.onFrame = (dt) => {

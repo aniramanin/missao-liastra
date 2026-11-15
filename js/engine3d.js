@@ -442,7 +442,7 @@
       const dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = now;
       this.step(dt);
       if (this.onFrame) this.onFrame(dt);
-      if (this.composer) this.composer.render(); else this.renderer.render(this.scene, this.camera);
+      if (this.composer && !this.calm) this.composer.render(); else this.renderer.render(this.scene, this.camera);
       this.raf = requestAnimationFrame(loop);
     };
     this.raf = requestAnimationFrame(loop);
@@ -518,7 +518,7 @@
       cam.lookAt(target); return;
     }
     const eye = this.mode === 'float' ? 0 : (this.eyeH || 1.62);
-    const bob = this.mode === 'walk' ? Math.sin(this.bob || 0) * 0.03 : 0;
+    const bob = this.mode === 'walk' && !this.calm ? Math.sin(this.bob || 0) * 0.03 : 0;
     cam.position.set(P.pos.x, P.pos.y + eye + bob, P.pos.z);
     cam.rotation.set(this.pitch, this.yaw, this.mode === 'float' ? Math.sin(performance.now() / 2400) * 0.03 : 0, 'YXZ');
   };
