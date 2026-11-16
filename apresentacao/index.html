@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Junior Astronaut Mission Trainer · Apresentação</title>
+<meta name="description" content="Apresentação de 7 slides do Junior Astronaut Mission Trainer, do Aerospace Innovation Center (NASA Space Apps Challenge 2026).">
+<link rel="icon" href="../assets/aic-emblem.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+* { margin: 0 }
+html, body { height: 100%; background: #02060F; overflow: hidden }
+body { font: 32px/1.2 'Inter', Arial, sans-serif }
+#stage { position: fixed; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: 0 0 }
+#stage > section { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; box-sizing: border-box; display: none; isolation: isolate }
+#stage > section.on { display: block }
+#stage > section { counter-increment: none }
+aside { display: none !important }
+h1 { font-size: 96px; font-weight: 600 } h2 { font-size: 64px; font-weight: 600 } h3 { font-size: 44px; font-weight: 600 }
+x-shape, x-icon { display: block }
+x-icon { -webkit-mask: var(--ic) center / contain no-repeat; mask: var(--ic) center / contain no-repeat; background: currentColor }
+.bg { z-index: -1 }
+#nav { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; gap: 10px; align-items: center; font: 600 14px Inter, sans-serif; color: #B9C8E8; background: rgba(5, 11, 28, .7); padding: 6px 10px; border-radius: 999px; z-index: 5; opacity: .25; transition: opacity .3s }
+#nav:hover, body.touch #nav { opacity: 1 }
+#nav button { background: none; border: 0; color: #F4F7FF; font: 600 18px Inter, sans-serif; width: 34px; height: 34px; border-radius: 50%; cursor: pointer }
+#nav button:hover { background: rgba(125, 183, 255, .2) }
+#nav a { color: #7DB7FF; text-decoration: none; margin-left: 6px }
+@media print { html, body { overflow: visible; height: auto } #nav { display: none } #stage { position: static; transform: none !important } #stage > section { display: block; position: relative; page-break-after: always } }
+</style>
+<style>
+/* Aerospace Innovation Center — azul da identidade */
+:root {
+  --ink: #050B1C;
+  --navy: #0B1A3D;
+  --paper: #F2F6FF;
+  --blue: #2F6BFF;
+  --sky: #7DB7FF;
+  --ice: #A9D4FF;
+  --soft: #B9C8E8;
+  --soft-l: #44527A;
+  --head-l: #0B1A3D;
+}
+body { font-family: 'Inter', Arial, sans-serif; color: #F4F7FF; }
+section { counter-increment: page; padding: 128px; background: var(--ink); color: #F4F7FF; }
+section.light { background: var(--paper); color: var(--head-l); }
+section.navy { background: var(--navy); }
+
+.bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+.eyebrow { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; font-weight: 700; letter-spacing: 3px; color: var(--sky); }
+.light .eyebrow { color: var(--blue); }
+.title { font-size: 72px; font-weight: 700; line-height: 1.06; letter-spacing: -2px; }
+.title .hl { color: var(--sky); }
+.light .title .hl { color: var(--blue); }
+.lead { font-size: 32px; line-height: 1.45; color: var(--soft); }
+.light .lead { color: var(--soft-l); }
+.label { font-size: 24px; line-height: 1.4; color: var(--soft); }
+.light .label { color: var(--soft-l); }
+
+/* aparelhos */
+.laptop { position: absolute; box-sizing: border-box; background: #12161F; border: 2px solid #4E586E; border-radius: 22px 22px 8px 8px; padding: 16px 16px 24px; box-shadow: 0 40px 90px rgba(0, 4, 18, 0.55), 0 0 140px rgba(47, 107, 255, 0.22); }
+.laptop .screen { display: block; border-radius: 6px; object-fit: cover; }
+.lap-base { position: absolute; box-sizing: border-box; height: 22px; background: linear-gradient(180deg, #D3D8E3, #858C9C); border-radius: 2px 2px 20px 20px; }
+.phone { position: absolute; box-sizing: border-box; background: #0E1016; border: 4px solid #7A8296; border-radius: 52px; padding: 11px; box-shadow: 0 40px 90px rgba(0, 4, 18, 0.6), 0 0 120px rgba(47, 107, 255, 0.25); }
+.phone .screen { display: block; border-radius: 40px; object-fit: cover; }
+.island { position: absolute; height: 24px; background: #000000; border-radius: 12px; }
+.light .laptop, .light .phone { box-shadow: 0 40px 90px rgba(11, 26, 61, 0.28); }
+
+/* cartões */
+.card { box-sizing: border-box; background: rgba(16, 32, 72, 0.72); border: 2px solid rgba(125, 183, 255, 0.28); border-radius: 28px; padding: 28px 32px; }
+.light .card { background: #FFFFFF; border: 2px solid #D6E2FF; }
+.card h3 { font-size: 44px; font-weight: 700; line-height: 1.1; letter-spacing: -1px; color: #F4F7FF; }
+.light .card h3 { color: var(--head-l); }
+.card .tag { font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; font-weight: 700; letter-spacing: 2px; color: var(--sky); }
+.light .card .tag { color: var(--blue); }
+.card p { font-size: 28px; line-height: 1.4; color: var(--soft); }
+.light .card p { color: var(--soft-l); }
+.big { font-size: 112px; font-weight: 800; line-height: 1; letter-spacing: -4px; color: var(--blue); }
+
+.pill { display: inline-block; background: var(--blue); color: #F4F7FF; font-size: 32px; font-weight: 600; padding: 18px 36px; border-radius: 48px; }
+
+.feat { display: flex; gap: 24px; align-items: flex-start; }
+.feat x-icon { width: 44px; height: 44px; color: var(--sky); }
+.feat p { font-size: 30px; line-height: 1.38; color: var(--soft); }
+.feat b { color: #F4F7FF; }
+
+.foot { position: absolute; left: 128px; bottom: 64px; width: 1664px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 24px; color: #6F80A8; }
+.light .foot { color: #7A88AA; }
+.foot .pg::after { content: counter(page) " / 7"; }
+
+/* movimento: chegada em etapas */
+@keyframes rise { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+@keyframes devin { from { opacity: 0; transform: translateY(70px); } to { opacity: 1; transform: translateY(0); } }
+.r { animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 110ms); }
+.d { animation: devin 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 110ms); }
+.f { animation: fadein 1.2s ease both; }
+
+</style></head><body>
+<div id="stage">
+<section id="capa" data-transition="fade">
+<svg class="bg" viewBox="0 0 1920 1080" width="1920" height="1080"><defs><radialGradient id="cg1" cx="0.74" cy="0.3" r="0.62"><stop offset="0" stop-color="#1D4FD8" stop-opacity="0.6"/><stop offset="1" stop-color="#050B1C" stop-opacity="0"/></radialGradient><radialGradient id="cg2" cx="0.08" cy="0.98" r="0.5"><stop offset="0" stop-color="#2F6BFF" stop-opacity="0.3"/><stop offset="1" stop-color="#050B1C" stop-opacity="0"/></radialGradient></defs><rect width="1920" height="1080" fill="#050B1C"/><rect width="1920" height="1080" fill="url(#cg1)"/><rect width="1920" height="1080" fill="url(#cg2)"/><g fill="#CFE0FF"><circle cx="112" cy="84" r="1.6" opacity="0.7"/><circle cx="380" cy="160" r="1.2" opacity="0.5"/><circle cx="620" cy="60" r="1.8" opacity="0.8"/><circle cx="760" cy="240" r="1.1" opacity="0.4"/><circle cx="1010" cy="120" r="1.5" opacity="0.7"/><circle cx="1280" cy="70" r="1.2" opacity="0.6"/><circle cx="1520" cy="180" r="1.7" opacity="0.8"/><circle cx="1800" cy="90" r="1.3" opacity="0.6"/><circle cx="1860" cy="420" r="1.1" opacity="0.5"/><circle cx="60" cy="520" r="1.4" opacity="0.6"/><circle cx="300" cy="980" r="1.6" opacity="0.7"/><circle cx="700" cy="1020" r="1.2" opacity="0.5"/><circle cx="980" cy="960" r="1.5" opacity="0.6"/><circle cx="1400" cy="1030" r="1.2" opacity="0.5"/><circle cx="1880" cy="980" r="1.7" opacity="0.7"/><circle cx="540" cy="700" r="1.1" opacity="0.4"/><circle cx="220" cy="330" r="1.3" opacity="0.5"/><circle cx="1700" cy="300" r="1.1" opacity="0.5"/></g></svg>
+<div style="width:740px; display:flex; flex-direction:column; gap:30px; padding-top:70px">
+<img class="r" src="media/aic_logo_white.png" alt="Aerospace Innovation Center" style="--i:0; width:360px; height:99px; object-fit:contain; align-self:flex-start">
+<p class="eyebrow r" style="--i:1">NASA SPACE APPS CHALLENGE 2026</p>
+<h1 class="r" style="--i:2; font-size:84px; font-weight:800; line-height:1.04; letter-spacing:-3px; white-space:nowrap">Junior Astronaut<br><span style="color:#7DB7FF">Mission Trainer</span></h1>
+<p class="lead r" style="--i:3; font-size:30px">Um simulador 3D para todas as idades: viva a rotina de bases em Marte, na Lua e numa cópia da Estação Espacial, com dados reais da NASA.</p>
+<p class="pill r" style="--i:4; align-self:flex-start; font-size:28px">aniramanin.github.io/missao-liastra</p>
+</div>
+<div class="laptop d" style="--i:2; left:900px; top:226px; width:900px; height:602px"><video class="screen" src="media/c_walk.mp4" poster="media/c_walk_still.jpg" autoplay muted loop playsinline aria-label="O jogo rodando no computador: astronauta caminhando pelo módulo de Comando da base em Marte" style="width:864px; height:540px"></video></div>
+<div class="lap-base d" style="--i:2; left:850px; top:826px; width:1000px"></div>
+<div class="phone d" style="--i:5; left:1560px; top:400px; width:262px; height:552px"><img class="screen" src="media/m_site.jpg" alt="O site do projeto aberto no celular" style="width:232px; height:522px"></div>
+<div class="island d" style="--i:5; left:1651px; top:428px; width:80px"></div>
+<aside>Abertura. O Junior Astronaut Mission Trainer é o projeto do Aerospace Innovation Center, parte do Instituto LIASTRA, para o desafio “Build a Junior Astronaut Mission Trainer” do NASA Space Apps Challenge 2026. No notebook, o jogo rodando de verdade: a astronauta caminha em terceira pessoa pelo módulo de Comando da Base Jezero, em Marte. No celular, o site do projeto. Tudo funciona no navegador, sem instalar nada.</aside>
+</section>
+
+<section id="ideia" class="light" data-transition="fade">
+<div style="width:780px; display:flex; flex-direction:column; gap:22px">
+<p class="eyebrow r" style="--i:0">A IDEIA</p>
+<h2 class="title r" style="--i:1; font-size:64px">Uma base espacial<br><span class="hl">numa aba do navegador.</span></h2>
+<p class="lead r" style="--i:2; font-size:28px">Sem download e sem cadastro. Abre no computador da escola, no Chromebook e no celular, e cada decisão do jogador tem uma consequência real.</p>
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:8px">
+<div class="card r" style="--i:3; padding:18px 28px"><p class="big" style="font-size:64px; letter-spacing:-2px">3</p><p style="font-size:26px">mundos em 3D</p></div>
+<div class="card r" style="--i:4; padding:18px 28px"><p class="big" style="font-size:64px; letter-spacing:-2px">11</p><p style="font-size:26px">missões reais</p></div>
+<div class="card r" style="--i:5; padding:18px 28px"><p class="big" style="font-size:64px; letter-spacing:-2px">6</p><p style="font-size:26px">culturas na estufa</p></div>
+<div class="card r" style="--i:6; padding:18px 28px"><p class="big" style="font-size:64px; letter-spacing:-2px">2</p><p style="font-size:26px">idiomas: PT e EN</p></div>
+</div>
+</div>
+<div class="laptop d" style="--i:2; left:1000px; top:250px; width:800px; height:540px"><img class="screen" src="media/d_site.jpg" alt="Página inicial do site no computador: Viva uma missão fora da Terra" style="width:764px; height:478px"></div>
+<div class="lap-base d" style="--i:2; left:955px; top:788px; width:890px"></div>
+<div class="phone d" style="--i:5; left:1590px; top:420px; width:218px; height:466px"><img class="screen" src="media/m_center.jpg" alt="Central de Missões no celular, com patente, medalhas e lista de missões" style="width:188px; height:436px"></div>
+<div class="island d" style="--i:5; left:1666px; top:446px; width:66px"></div>
+<p class="foot"><span>Aerospace Innovation Center · LIASTRA Institute</span><span class="pg"></span></p>
+<aside>O desafio pede um treinador de missão para astronautas júnior. Nossa resposta é uma base espacial que roda inteira no navegador: o professor abre um link e a turma joga, no computador ou no celular. São três mundos em 3D, onze missões reais, seis culturas que já foram cultivadas no espaço e o jogo inteiro em português e inglês, com troca de idioma sem sair da partida.</aside>
+</section>
+
+<section id="mundos" data-transition="fade">
+<svg class="bg" viewBox="0 0 1920 1080" width="1920" height="1080"><defs><radialGradient id="mg1" cx="0.3" cy="0.55" r="0.6"><stop offset="0" stop-color="#1D4FD8" stop-opacity="0.5"/><stop offset="1" stop-color="#050B1C" stop-opacity="0"/></radialGradient></defs><rect width="1920" height="1080" fill="#050B1C"/><rect width="1920" height="1080" fill="url(#mg1)"/><g fill="#CFE0FF"><circle cx="140" cy="70" r="1.5" opacity="0.6"/><circle cx="520" cy="40" r="1.2" opacity="0.5"/><circle cx="1120" cy="90" r="1.7" opacity="0.7"/><circle cx="1650" cy="50" r="1.3" opacity="0.6"/><circle cx="1880" cy="260" r="1.1" opacity="0.5"/><circle cx="60" cy="900" r="1.6" opacity="0.6"/><circle cx="860" cy="1040" r="1.2" opacity="0.5"/><circle cx="1500" cy="1010" r="1.5" opacity="0.6"/></g></svg>
+<p class="eyebrow r" style="--i:0">TRÊS MUNDOS</p>
+<h2 class="title r" style="--i:1; margin-top:20px">Ande, flutue e dirija <span class="hl">por dentro de cada base.</span></h2>
+<div class="laptop d" style="--i:2; left:128px; top:356px; width:880px; height:571px"><video class="screen" src="media/c_worlds.mp4" poster="media/c_worlds_still.jpg" autoplay muted loop playsinline aria-label="Voo de câmera pelas três bases: Marte, Lua e Estação Espacial" style="width:844px; height:527px"></video></div>
+<div class="lap-base d" style="--i:2; left:84px; top:925px; width:968px"></div>
+<div style="position:absolute; left:1160px; top:356px; width:632px; display:flex; flex-direction:column; gap:20px">
+<div class="card r" style="--i:3; padding:22px 30px"><h3 style="font-size:36px"><span style="color:#7DB7FF">Marte</span> · Base Jezero</h3><p style="margin-top:8px; font-size:26px">Estufa, laboratório, rover e pouso, com tempestades de poeira e solares.</p></div>
+<div class="card r" style="--i:4; padding:22px 30px"><h3 style="font-size:36px"><span style="color:#7DB7FF">Lua</span> · Base Shackleton</h3><p style="margin-top:8px; font-size:26px">Polo sul: gelo nas crateras, noites de vários dias e reator de fissão.</p></div>
+<div class="card r" style="--i:5; padding:22px 30px"><h3 style="font-size:36px"><span style="color:#7DB7FF">Órbita</span> · Estação Espacial</h3><p style="margin-top:8px; font-size:26px">Cópia da ISS com Cupola e Canadarm2, dando uma volta na Terra a cada 90 minutos.</p></div>
+</div>
+<aside>São três mundos completos, e o jogador anda por dentro deles: não é um menu nem uma vista de cima. Em Marte, a Base Jezero tem estufa, laboratório ICBS, suporte de vida, escotilha, rover e plataforma de pouso. Na Lua, a Base Shackleton fica no polo sul, onde há gelo em crateras sempre na sombra e noites de vários dias. Na órbita, uma cópia da Estação Espacial com Destiny, Harmony, Columbus, Kibo, a Cupola e o braço Canadarm2. O vídeo mostra as três bases capturadas do jogo.</aside>
+</section>
+
+<section id="jogar" class="navy" data-transition="fade">
+<p class="eyebrow r" style="--i:0">COMO SE JOGA</p>
+<h2 class="title r" style="--i:1; margin-top:20px; width:1664px">Viva a rotina de <span class="hl">um astronauta de verdade.</span></h2>
+<div class="laptop d" style="--i:2; left:128px; top:340px; width:840px; height:564px"><img class="screen" src="media/d_power.jpg" alt="Painel Plano de energia: 10 células divididas entre suporte de vida, estufa, escudo d’água e ciência" style="width:804px; height:502px"></div>
+<div class="lap-base d" style="--i:2; left:79px; top:902px; width:938px"></div>
+<div class="phone d" style="--i:4; left:830px; top:430px; width:230px; height:490px"><video class="screen" src="media/c_green.mp4" poster="media/c_green_still.jpg" autoplay muted loop playsinline aria-label="No celular: astronauta em terceira pessoa caminhando entre as bandejas da estufa" style="width:200px; height:460px"></video></div>
+<div class="island d" style="--i:4; left:911px; top:456px; width:68px"></div>
+<div style="position:absolute; left:1160px; top:350px; width:632px; display:flex; flex-direction:column; gap:30px">
+<div class="feat r" style="--i:3"><x-icon name="Users"></x-icon><p><b>1ª ou 3ª pessoa.</b> Tecla V no computador; joystick e toque no celular.</p></div>
+<div class="feat r" style="--i:4"><x-icon name="Lightning"></x-icon><p><b>10 células de energia</b> para ar, estufa, escudo e ciência, com previsão de quando cada recurso acaba.</p></div>
+<div class="feat r" style="--i:5"><x-icon name="Home"></x-icon><p><b>Estufa com 6 plantas</b> que já cresceram no espaço, cada uma com tempo e colheita próprios.</p></div>
+<div class="feat r" style="--i:6"><x-icon name="Tool"></x-icon><p><b>Tarefas reais:</b> vestir o traje, dirigir o rover, usar o braço robótico e trocar baterias numa caminhada espacial.</p></div>
+</div>
+<aside>Aqui está o jogo em ação. No notebook, o painel de energia: o jogador divide dez células entre suporte de vida, luz da estufa, escudo de água contra radiação e ciência, e o painel mostra quantos sóis faltam para o ar, a comida ou a bateria acabarem. No celular, a astronauta em terceira pessoa caminhando pela estufa, com joystick na tela. A câmera alterna entre primeira e terceira pessoa com a tecla V. O jogador também dorme, toma banho, cozinha, faz exercício, analisa amostras, veste o traje, dirige o rover e opera o Canadarm2.</aside>
+</section>
+
+<section id="dados" data-transition="fade" style="background:#0E2A78">
+<svg class="bg" viewBox="0 0 1920 1080" width="1920" height="1080"><defs><linearGradient id="dl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1F4FD0"/><stop offset="1" stop-color="#071230"/></linearGradient><radialGradient id="dg1" cx="0.38" cy="0.5" r="0.4"><stop offset="0" stop-color="#7DB7FF" stop-opacity="0.35"/><stop offset="1" stop-color="#1F4FD0" stop-opacity="0"/></radialGradient></defs><rect width="1920" height="1080" fill="url(#dl)"/><rect width="1920" height="1080" fill="url(#dg1)"/></svg>
+<div style="width:560px; display:flex; flex-direction:column; gap:24px">
+<p class="eyebrow r" style="--i:0; color:#A9D4FF">CIÊNCIA DE VERDADE</p>
+<h2 class="title r" style="--i:1">Dados reais <span style="color:#A9D4FF">da NASA.</span></h2>
+<p class="lead r" style="--i:2; color:#D6E4FF">O jogo segue o Sol de hoje e usa números medidos em missões reais, sempre com a fonte na tela.</p>
+</div>
+<div class="phone d" style="--i:2; left:740px; top:250px; width:300px; height:654px"><img class="screen" src="media/m_comms.jpg" alt="Rádio da base no celular: imagem do Sol de hoje do NASA SDO e atraso de 10,9 minutos para Marte" style="width:270px; height:624px"></div>
+<div class="island d" style="--i:2; left:850px; top:276px; width:80px"></div>
+<div style="position:absolute; left:1130px; top:250px; width:662px; display:flex; flex-direction:column; gap:18px">
+<div class="card r" style="--i:3; padding:22px 30px; background:rgba(5, 14, 40, 0.55)"><p class="tag" style="color:#A9D4FF">DONKI · CCMC/NASA</p><p style="margin-top:6px; color:#F4F7FF">Tempestades solares reais dos últimos 30 dias definem o risco de cada dia da missão.</p></div>
+<div class="card r" style="--i:4; padding:22px 30px; background:rgba(5, 14, 40, 0.55)"><p class="tag" style="color:#A9D4FF">SDO · NASA</p><p style="margin-top:6px; color:#F4F7FF">A imagem do Sol de hoje aparece no rádio da base e no site.</p></div>
+<div class="card r" style="--i:5; padding:22px 30px; background:rgba(5, 14, 40, 0.55)"><p class="tag" style="color:#A9D4FF">JPL · POSIÇÕES DOS PLANETAS</p><p style="margin-top:6px; color:#F4F7FF">O atraso das mensagens entre a Terra e Marte é calculado para a data de hoje.</p></div>
+<div class="card r" style="--i:6; padding:22px 30px; background:rgba(5, 14, 40, 0.55)"><p class="tag" style="color:#A9D4FF">CURIOSITY RAD · CHANG’E 4</p><p style="margin-top:6px; color:#F4F7FF">0,67 mSv por dia em Marte e 1,37 mSv por dia na Lua, medidos na superfície.</p></div>
+</div>
+<p class="foot" style="color:#A9C3F0"><span>Fontes: api.nasa.gov · sdo.gsfc.nasa.gov · ssd.jpl.nasa.gov · Hassler et al. 2014 · Zhang et al. 2020</span><span class="pg"></span></p>
+<aside>Tudo o que acontece no jogo vem de dados reais. As tempestades solares seguem a base DONKI da NASA: cada dia da missão corresponde a um dia real, e a ejeção de massa coronal mais rápida daquele dia define o risco. Se a API estiver fora do ar, o jogo usa um arquivo real e avisa na tela. O rádio da base mostra a imagem do Sol de hoje feita pelo Solar Dynamics Observatory. O atraso das mensagens com Marte é calculado no navegador a partir das posições dos planetas do JPL. As doses de radiação vêm do RAD do Curiosity em Marte e do LND da sonda chinesa Chang’e 4 na Lua, e os números de oxigênio e CO₂ por astronauta vêm do documento de suporte de vida da NASA.</aside>
+</section>
+
+<section id="recompensas" data-transition="fade">
+<svg class="bg" viewBox="0 0 1920 1080" width="1920" height="1080"><defs><radialGradient id="rg1" cx="0.8" cy="0.55" r="0.55"><stop offset="0" stop-color="#1D4FD8" stop-opacity="0.5"/><stop offset="1" stop-color="#050B1C" stop-opacity="0"/></radialGradient></defs><rect width="1920" height="1080" fill="#050B1C"/><rect width="1920" height="1080" fill="url(#rg1)"/><g fill="#CFE0FF"><circle cx="90" cy="60" r="1.4" opacity="0.6"/><circle cx="700" cy="50" r="1.2" opacity="0.5"/><circle cx="1300" cy="80" r="1.6" opacity="0.7"/><circle cx="1860" cy="140" r="1.2" opacity="0.5"/><circle cx="40" cy="1000" r="1.5" opacity="0.6"/><circle cx="1000" cy="1040" r="1.2" opacity="0.5"/></g></svg>
+<p class="eyebrow r" style="--i:0">11 MISSÕES · RECOMPENSAS</p>
+<h2 class="title r" style="--i:1; margin-top:20px; width:900px">Missão cumprida, <span class="hl">recompensa ganha.</span></h2>
+<div style="position:absolute; left:128px; top:380px; width:820px; display:grid; grid-template-columns:repeat(6, 120px); gap:16px 20px">
+<img class="r" style="--i:2; width:120px; height:120px; object-fit:contain" src="media/patch_00.png" alt="Patch de missão 1">
+<img class="r" style="--i:2; width:120px; height:120px; object-fit:contain" src="media/patch_01.png" alt="Patch de missão 2">
+<img class="r" style="--i:3; width:120px; height:120px; object-fit:contain" src="media/patch_02.png" alt="Patch de missão 3">
+<img class="r" style="--i:3; width:120px; height:120px; object-fit:contain" src="media/patch_03.png" alt="Patch de missão 4">
+<img class="r" style="--i:4; width:120px; height:120px; object-fit:contain" src="media/patch_04.png" alt="Patch de missão 5">
+<img class="r" style="--i:4; width:120px; height:120px; object-fit:contain" src="media/patch_05.png" alt="Patch de missão 6">
+<img class="r" style="--i:5; width:120px; height:120px; object-fit:contain" src="media/patch_06.png" alt="Patch de missão 7">
+<img class="r" style="--i:5; width:120px; height:120px; object-fit:contain" src="media/patch_07.png" alt="Patch de missão 8">
+<img class="r" style="--i:6; width:120px; height:120px; object-fit:contain" src="media/patch_08.png" alt="Patch de missão 9">
+<img class="r" style="--i:6; width:120px; height:120px; object-fit:contain" src="media/patch_09.png" alt="Patch de missão 10">
+<img class="r" style="--i:7; width:120px; height:120px; object-fit:contain" src="media/patch_10.png" alt="Patch de missão 11">
+</div>
+<div style="position:absolute; left:128px; top:690px; width:820px; display:grid; grid-template-columns:1fr 1fr; gap:22px 40px">
+<div class="r" style="--i:7"><p style="font-size:34px; font-weight:700; color:#7DB7FF">XP e 7 patentes</p><p class="label" style="margin-top:4px">de Recruta a Lenda espacial</p></div>
+<div class="r" style="--i:8"><p style="font-size:34px; font-weight:700; color:#7DB7FF">11 medalhas</p><p class="label" style="margin-top:4px">três estrelas, EVA, agricultor…</p></div>
+<div class="r" style="--i:9"><p style="font-size:34px; font-weight:700; color:#7DB7FF">7 cores de traje</p><p class="label" style="margin-top:4px">liberadas a cada patente</p></div>
+<div class="r" style="--i:10"><p style="font-size:34px; font-weight:700; color:#7DB7FF">Quiz no fim</p><p class="label" style="margin-top:4px">3 perguntas, com explicação</p></div>
+</div>
+<div class="laptop d" style="--i:3; left:1010px; top:300px; width:700px; height:478px"><img class="screen" src="media/d_end.jpg" alt="Tela de fim de missão: patch conquistado, três estrelas, +350 XP e nova patente" style="width:664px; height:415px"></div>
+<div class="lap-base d" style="--i:3; left:970px; top:776px; width:780px"></div>
+<div class="phone d" style="--i:6; left:1580px; top:440px; width:212px; height:452px"><img class="screen" src="media/m_quiz.jpg" alt="Quiz de 3 perguntas no celular, no fim da missão" style="width:182px; height:422px"></div>
+<div class="island d" style="--i:6; left:1654px; top:465px; width:64px"></div>
+<aside>Cada uma das 11 missões é baseada num fato real e dá um patch no estilo da NASA: por exemplo a tempestade de poeira de 2018 que encerrou o Opportunity, o filtro de CO₂ improvisado da Apollo 13 e o furo de 2 milímetros encontrado na Soyuz em 2018. Ao terminar, o jogador vê o gráfico dos recursos, o que a missão ensinou, ganha XP e pode subir de patente, liberando uma nova cor de traje para o avatar. Há 11 medalhas para colecionar. No fim, um quiz de três perguntas, com explicação de cada resposta, entra no resumo que o professor pode copiar para a turma.</aside>
+</section>
+
+<section id="aula" class="navy">
+<svg class="bg" viewBox="0 0 1920 1080" width="1920" height="1080"><defs><radialGradient id="ag1" cx="0.82" cy="0.2" r="0.55"><stop offset="0" stop-color="#2F6BFF" stop-opacity="0.45"/><stop offset="1" stop-color="#0B1A3D" stop-opacity="0"/></radialGradient></defs><rect width="1920" height="1080" fill="#0B1A3D"/><rect width="1920" height="1080" fill="url(#ag1)"/></svg>
+<p class="eyebrow r" style="--i:0">PARA A SALA DE AULA</p>
+<h2 class="title r" style="--i:1; margin-top:20px">Abra um link e <span class="hl">comece a missão.</span></h2>
+<div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:24px; margin-top:48px">
+<div class="card r" style="--i:2"><x-icon name="GraduationCap" style="width:48px; height:48px; color:#7DB7FF"></x-icon><h3 style="margin-top:14px; font-size:36px">Guia do professor</h3><p style="margin-top:8px; font-size:26px">Aula de 45 minutos, objetivos, perguntas, rubrica e atividade sem computador.</p></div>
+<div class="card r" style="--i:3"><x-icon name="Verified" style="width:48px; height:48px; color:#7DB7FF"></x-icon><h3 style="margin-top:14px; font-size:36px">Acessível</h3><p style="margin-top:8px; font-size:26px">Texto maior, alto contraste, menos movimento e palavras difíceis explicadas no toque.</p></div>
+<div class="card r" style="--i:4"><x-icon name="Globe" style="width:48px; height:48px; color:#7DB7FF"></x-icon><h3 style="margin-top:14px; font-size:36px">Em qualquer tela</h3><p style="margin-top:8px; font-size:26px">Computador, Chromebook e celular, em português e inglês, para todas as idades.</p></div>
+</div>
+<div class="r" style="--i:5; display:flex; align-items:center; gap:40px; margin-top:56px">
+<p class="pill" style="font-size:34px">aniramanin.github.io/missao-liastra</p>
+<p class="label" style="font-size:26px; width:820px">Equipe: Marina Freitas e Luiza Oliveira (fundadoras), Raylla Vardiero, Esther Anjo e Barbara Dorneles.</p>
+</div>
+<div class="r" style="--i:6; position:absolute; left:128px; top:850px; width:1664px; display:flex; align-items:center; gap:56px">
+<img src="media/aic_logo_white.png" alt="Aerospace Innovation Center" style="width:300px; height:83px; object-fit:contain">
+<img src="media/liastra_white.png" alt="LIASTRA Institute" style="width:190px; height:65px; object-fit:contain">
+<img src="media/icbs_white.png" alt="ICBS" style="width:160px; height:67px; object-fit:contain">
+<p class="eyebrow" style="margin-left:auto; color:#7DB7FF">NASA SPACE APPS CHALLENGE 2026</p>
+</div>
+<aside>Para usar em sala, basta abrir o link. O guia do professor, em português e inglês, traz objetivos de aprendizagem, um plano de aula de 45 minutos, missões recomendadas, perguntas para discussão, uma rubrica e uma atividade sem computador, a das 6 células. O jogo tem opções de acessibilidade no menu de pausa e funciona em computadores, Chromebooks e celulares. O projeto é do Aerospace Innovation Center, parte do Instituto LIASTRA, com Marina Freitas e Luiza Oliveira, fundadoras, e Raylla Vardiero, Esther Anjo e Barbara Dorneles.</aside>
+</section>
+
+</div>
+<div id="nav"><button id="prev" aria-label="Slide anterior">‹</button><span id="count"></span><button id="next" aria-label="Próximo slide">›</button><button id="fs" aria-label="Tela cheia">⛶</button><a href="../">Site</a></div>
+<script>
+// ícones (linha) usados nos slides
+const IC = {
+ Users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+ Lightning: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+ Home: '<path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 22V12h6v10"/>',
+ Tool: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94z"/>',
+ GraduationCap: '<path d="M22 10 12 5 2 10l10 5 10-5zM6 12v5c3 3 9 3 12 0v-5"/>',
+ Verified: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+ Globe: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>'
+};
+document.querySelectorAll('x-icon').forEach(el => { const p = IC[el.getAttribute('name')]; if (!p) return; const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`; el.style.setProperty('--ic', `url("data:image/svg+xml,${encodeURIComponent(svg)}")`); });
+const S = [...document.querySelectorAll('#stage > section')], stage = document.getElementById('stage');
+S.forEach((s, i) => s.querySelectorAll('.pg').forEach(p => { p.textContent = (i + 1) + ' / ' + S.length; p.classList.remove('pg'); }));
+let cur = Math.max(0, Math.min(S.length - 1, (parseInt((location.hash.match(/slide-(\d+)/) || [])[1]) || 1) - 1));
+function show(i) { cur = Math.max(0, Math.min(S.length - 1, i)); S.forEach((s, k) => { s.classList.toggle('on', k === cur); s.querySelectorAll('video').forEach(v => { if (k === cur) { v.currentTime = 0; v.play().catch(() => {}); } else v.pause(); }); }); document.getElementById('count').textContent = (cur + 1) + ' / ' + S.length; history.replaceState(null, '', '#slide-' + (cur + 1)); }
+function fit() { const k = Math.min(innerWidth / 1920, innerHeight / 1080); stage.style.transform = `scale(${k}) translate(-50%, -50%)`; }
+addEventListener('resize', fit); fit(); show(cur);
+addEventListener('hashchange', () => { const n = parseInt((location.hash.match(/slide-(\d+)/) || [])[1]); if (n && n - 1 !== cur) show(n - 1); });
+addEventListener('keydown', e => { if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); show(cur + 1); } if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); show(cur - 1); } if (e.key === 'Home') show(0); if (e.key === 'End') show(S.length - 1); if (e.key === 'f') document.documentElement.requestFullscreen?.(); });
+document.getElementById('prev').onclick = () => show(cur - 1); document.getElementById('next').onclick = () => show(cur + 1);
+document.getElementById('fs').onclick = () => document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.();
+let tx = null; addEventListener('touchstart', e => { tx = e.touches[0].clientX; document.body.classList.add('touch'); }, { passive: true });
+addEventListener('touchend', e => { if (tx === null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1)); tx = null; });
+</script>
+</body></html>

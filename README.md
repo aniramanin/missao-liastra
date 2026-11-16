@@ -8,6 +8,8 @@ do NASA Space Apps Challenge 2026.
 
 **Vídeo de apresentação (30 s):** [português](media/aerospace-innovation-center-pt.mp4) · [English](media/aerospace-innovation-center-en.mp4)
 
+**Apresentação (7 slides):** [abrir no navegador](https://aniramanin.github.io/missao-liastra/apresentacao/) · [PDF](apresentacao/apresentacao-junior-astronaut-mission-trainer.pdf)
+
 
 Um simulador **3D em primeira pessoa** (Three.js, com bloom e reflexos de ambiente) em que o jogador vive missões reais.
 
